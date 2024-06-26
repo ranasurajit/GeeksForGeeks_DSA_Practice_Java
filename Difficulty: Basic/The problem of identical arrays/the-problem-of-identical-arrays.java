@@ -54,11 +54,9 @@ class Array {
             
 
 class Complete {
-    
+   
     // Function for finding maximum and value pair
     public static int check (int arr[], int[] brr, int n) {
-        // mergeSort(arr, 0, n - 1);
-        // mergeSort(brr, 0, n - 1);
         Arrays.sort(arr);
         Arrays.sort(brr);
         int p = 0;
@@ -71,44 +69,6 @@ class Complete {
             q++;
         }
         return 1;
-    }
-    
-    private static void mergeSort(int[] nums, int low, int high) {
-        if (low < high) {
-            int mid = low + (high - low) / 2;
-            mergeSort(nums, low, mid);
-            mergeSort(nums, mid + 1, high);
-            mergeSortedArrays(nums, low, mid, high);
-        }
-    }
-    
-    private static void mergeSortedArrays(int[] nums, int low, int mid, int high) {
-        int i = low;
-        int j = mid + 1;
-        int k = low;
-        int[] sorted = new int[nums.length];
-        while (i <= mid && j <= high) {
-            if (nums[i] <= nums[j]) {
-                sorted[k] = nums[i];
-                i++;
-            } else {
-                sorted[k] = nums[j];
-                j++;
-            }
-            k++;
-        }
-        if (j > high) {
-            while (i <= mid) {
-                sorted[k++] = nums[i++];
-            }
-        } else {
-            while (j <= high) {
-                sorted[k++] = nums[j++];
-            }
-        }
-        for (int p = low; p <= high; p++) {
-            nums[p] = sorted[p];
-        }
     }
     
 }
