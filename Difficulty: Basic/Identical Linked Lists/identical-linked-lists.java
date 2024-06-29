@@ -90,15 +90,19 @@ class Solution {
         }
         Node current1 = head1;
         Node current2 = head2;
-        while (current1 != null && current2 != null) {
-            if (current1.data != current2.data) {
+        while (current1 != null || current2 != null) {
+            if (current1 != null && current2 != null && 
+                current1.data != current2.data) {
                 return false;
+            }
+            if (current1 == null) {
+                return current2 == null;
+            }
+            if (current2 == null) {
+                return current1 == null;
             }
             current1 = current1.next;
             current2 = current2.next;
-        }
-        if (current1 != null || current2 != null) {
-            return false;
         }
         return true;
     }
