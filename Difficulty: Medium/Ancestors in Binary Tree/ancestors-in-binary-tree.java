@@ -111,9 +111,9 @@ class Node
     }
 }*/
 class Solution {
+
     public ArrayList<Integer> Ancestors(Node root, int target) {
         ArrayList<Integer> ancestors = new ArrayList<Integer>();
-        Stack<Integer> st = new Stack<Integer>();
         dfsTree(root, target, ancestors, "");
         return ancestors;
     }
