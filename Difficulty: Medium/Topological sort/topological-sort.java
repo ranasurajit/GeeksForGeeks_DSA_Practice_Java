@@ -81,7 +81,6 @@ class Solution {
         visited[u] = true;
         for (Integer v : adj.get(u)) {
             if (!visited[v]) {
-                visited[v] = true;
                 dfsGraph(adj, v, visited, st);
             }
         }
