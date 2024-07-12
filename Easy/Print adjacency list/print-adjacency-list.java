@@ -43,21 +43,9 @@ class Solution {
         for (int i = 0; i < V; i++) {
             adj.add(new ArrayList<Integer>());
         }
-        Map<Integer, ArrayList<Integer>> hm = new HashMap<Integer, ArrayList<Integer>>();
-        for (int i = 0; i < edges.length; i++) {
-            if (!hm.containsKey(edges[i][0])) {
-                hm.put(edges[i][0], new ArrayList<Integer>());
-            }
-            if (!hm.containsKey(edges[i][1])) {
-                hm.put(edges[i][1], new ArrayList<Integer>());
-            }
-            hm.get(edges[i][0]).add(edges[i][1]);
-            hm.get(edges[i][1]).add(edges[i][0]);
-        }
-        for (int i = 0; i < V; i++) {
-            if (hm.containsKey(i)) {
-                adj.get(i).addAll(hm.get(i));
-            }
+        for (int[] edge : edges) {
+            adj.get(edge[0]).add(edge[1]);
+            adj.get(edge[1]).add(edge[0]);
         }
         return adj;
     }
