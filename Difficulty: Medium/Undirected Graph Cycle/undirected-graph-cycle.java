@@ -37,28 +37,41 @@ class Solution {
     public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
         boolean[] visited = new boolean[V];
         for (int i = 0; i < V; i++) {
-            if (!visited[i] && graphHasCycle(adj, visited, i, -1)) {
+            if (!visited[i] && graphHasCycleBFS(adj, visited, i)) {
                 return true;
             }
         }
         return false;
     }
     
-    private boolean graphHasCycle(ArrayList<ArrayList<Integer>> adj,
-        boolean[] visited, int u, int parent) {
-        visited[u] = true;
-        for (Integer v : adj.get(u)) {
-            if (v == parent) {
-                continue;
-            }
-            if (visited[v]) {
-                return true;
-            }
-            visited[v] = true;
-            if (graphHasCycle(adj, visited, v, u)) {
-                return true;
+    private boolean graphHasCycleBFS(ArrayList<ArrayList<Integer>> adj,
+        boolean[] visited, int index) {
+        Queue<Pair> queue = new LinkedList<Pair>();
+        queue.offer(new Pair(index, -1));
+        visited[index] = true;
+        while (!queue.isEmpty()) {
+            Pair current = queue.poll();
+            int u = current.node;
+            int parent = current.parent;
+            for (Integer v : adj.get(u)) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    queue.offer(new Pair(v, u));
+                } else if (v != parent) {
+                    return true;
+                }
             }
         }
         return false;
+    }
+    
+    class Pair {
+        int node;
+        int parent;
+        
+        public Pair (int node, int parent) {
+            this.node = node;
+            this.parent = parent;
+        }
     }
 }
