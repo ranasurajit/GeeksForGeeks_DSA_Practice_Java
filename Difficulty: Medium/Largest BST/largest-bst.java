@@ -114,41 +114,41 @@ class GFG
 
 class Solution{
     
-    static int ans, min_val=Integer.MIN_VALUE, max_val=Integer.MAX_VALUE;
     // Return the size of the largest sub-tree which is also a BST
-    static int largestBst(Node root)
-    {
-        ans=0;
-        solve(root);
-        return ans;   
+    static int largestBst(Node root) {
+        NodeValue node = helper(root);
+        return node.size;
     }
     
-    static int[] solve(Node root){
-        if(root==null)  return new int[]{max_val,min_val,0};
-        
-        int left[] = solve(root.left);
-        int right[] = solve(root.right);
-        
-        int size = 1+left[2]+right[2];
-        int arr[];
-        
-        //tree invalid
-        if(left[1]>=root.data || root.data>=right[0]){
-            arr = new int[]{ min_val, max_val, -1 };
-        }else{
-            if(root.left==null && root.right==null){
-                left[0]=root.data;
-                right[1]=root.data;
-            }else if(root.left==null){
-                left[0]=root.data;
-            }else if(root.right==null){
-                right[1]=root.data;
-            }
-            arr = new int[]{left[0],right[1],size};
-            ans=Math.max(ans,size);
+    private static NodeValue helper(Node root) {
+        if (root == null) {
+            return new NodeValue(Integer.MAX_VALUE, Integer.MIN_VALUE, 0);
         }
+        // Post order traversal
+        NodeValue left = helper(root.left);
+        NodeValue right = helper(root.right);
+        if (root.data > left.max && root.data < right.min) {
+            // This is a valid BST
+            return new NodeValue(Math.min(root.data, left.min), 
+                Math.max(root.data, right.max),
+                1 + left.size + right.size);
+        }
+        // Invalid BST
+        return new NodeValue(Integer.MIN_VALUE, 
+            Integer.MAX_VALUE, 
+            Math.max(left.size, right.size));
+    }
+    
+    static class NodeValue {
+        int min;
+        int max;
+        int size;
         
-        return arr;
+        public NodeValue(int min, int max, int size) {
+            this.min = min;
+            this.max = max;
+            this.size = size;
+        }
     }
     
 }
