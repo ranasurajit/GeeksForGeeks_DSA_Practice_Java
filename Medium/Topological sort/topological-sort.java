@@ -61,29 +61,32 @@ class Main {
 class Solution {
     //Function to return list containing vertices in Topological order. 
     static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) {
-        boolean[] visited = new boolean[V];
+        // 0 - not visited, 1 - visit in progress, 2 - visited
+        int[] visited = new int[V + 1];
         Stack<Integer> st = new Stack<Integer>();
         for (int i = 0; i < V; i++) {
-            if (!visited[i]) {
-                dfsGraph(adj, i, visited, st);
+            if (visited[i] == 0) {
+                // Using DFS
+                dfsGraph(i, adj, visited, st);
             }
         }
-        int[] topoList = new int[V];
-        int count = 0;
+        int[] sorted = new int[st.size()];
+        int index = 0;
         while (!st.isEmpty()) {
-            topoList[count++] = st.pop();
+            sorted[index++] = st.pop();
         }
-        return topoList;
+        return sorted;
     }
     
-    private static void dfsGraph(ArrayList<ArrayList<Integer>> adj, 
-        int u, boolean[] visited, Stack<Integer> st) {
-        visited[u] = true;
+    private static void dfsGraph(int u, ArrayList<ArrayList<Integer>> adj,
+        int[] visited, Stack<Integer> st) {
+        visited[u] = 1; // visit in progress
         for (Integer v : adj.get(u)) {
-            if (!visited[v]) {
-                dfsGraph(adj, v, visited, st);
+            if (visited[v] == 0) {
+                dfsGraph(v, adj, visited, st);
             }
         }
-        st.add(u);
+        st.push(u);
+        visited[u] = 2;
     }
 }
