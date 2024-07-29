@@ -48,10 +48,12 @@ class Solution {
                     break;
                 }
             }
+            // setting the maximum reached till row -> i
             if (max[0] < current[0]) {
                 max = current;
             }
         }
+        // if none of rows having 1's
         if (max[0] == 0) {
             return -1;
         }
