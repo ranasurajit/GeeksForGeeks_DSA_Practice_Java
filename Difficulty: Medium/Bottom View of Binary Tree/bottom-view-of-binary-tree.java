@@ -122,18 +122,17 @@ class Solution {
     public ArrayList <Integer> bottomView(Node root) {
         TreeMap<Integer, Integer> tm = new TreeMap<Integer, Integer>();
         Queue<Pair> queue = new LinkedList<Pair>();
-        queue.offer(new Pair(root, 0, 0));
+        queue.offer(new Pair(root, 0));
         while (!queue.isEmpty()) {
             Pair current = queue.poll();
             Node node = current.node;
-            int level = current.level;
             int offset = current.offset;
             tm.put(offset, node.data);
             if (node.left != null) {
-                queue.offer(new Pair(node.left, level + 1, offset - 1));
+                queue.offer(new Pair(node.left, offset - 1));
             }
             if (node.right != null) {
-                queue.offer(new Pair(node.right, level + 1, offset + 1));
+                queue.offer(new Pair(node.right, offset + 1));
             }
         }
         ArrayList<Integer> view = new ArrayList<Integer>();
@@ -145,12 +144,10 @@ class Solution {
     
     class Pair {
         Node node;
-        int level;
         int offset;
         
-        public Pair(Node node, int level, int offset) {
+        public Pair(Node node, int offset) {
             this.node = node;
-            this.level = level;
             this.offset = offset;
         }
     }
