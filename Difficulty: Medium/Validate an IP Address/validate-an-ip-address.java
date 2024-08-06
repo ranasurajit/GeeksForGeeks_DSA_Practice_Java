@@ -30,7 +30,6 @@ public class validip {
 // User function Template for Java
 
 class Solution {
-
     public boolean isValid(String str) {
         int chPos = 0;
         int dotPos = 0;
@@ -42,14 +41,17 @@ class Solution {
                 index++;
             }
             if (dotPos - chPos <= 0) {
+                // if two dots are next to each other
                 return false;
             }
             String segment = str.substring(chPos, dotPos);
             if (segment.length() > 1 && segment.charAt(0) == '0') {
+                // if the segment number has a leading zero
                 return false;
             }
             int value = Integer.valueOf(segment);
             if (value < 0 || value > 255) {
+                // valid segment in ip-address is >=0 && <= 255
                 return false;
             }
             dotPos++;
@@ -58,6 +60,7 @@ class Solution {
             segments++;
         }
         if (segments != 4) {
+            // number of valid segments in ip-address = 4
             return false;
         }
         return true;
