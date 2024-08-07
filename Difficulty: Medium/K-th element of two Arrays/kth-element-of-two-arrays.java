@@ -56,13 +56,19 @@ class Solution {
             }
             r++;
         }
-        while (p < len1 && r <= k - 1) {
+        while (p < len1) {
             kAnswer = arr1[p];
+            if (r == k - 1) {
+                return kAnswer;
+            }
             p++;
             r++;
         }
         while (q < len2 && r <= k - 1) {
             kAnswer = arr2[q];
+            if (r == k - 1) {
+                return kAnswer;
+            }
             q++;
             r++;
         }
