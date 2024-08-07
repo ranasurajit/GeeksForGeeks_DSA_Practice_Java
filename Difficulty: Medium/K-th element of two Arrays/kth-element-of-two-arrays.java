@@ -39,26 +39,33 @@ class Solution {
     public long kthElement(int k, int arr1[], int arr2[]) {
         int len1 = arr1.length;
         int len2 = arr2.length;
-        int[] sorted = new int[len1 + len2];
         int p = 0;
         int q = 0;
         int r = 0;
+        int kAnswer = 0;
         while (p < len1 && q < len2) {
             if (arr1[p] < arr2[q]) {
-                sorted[r] = arr1[p];
+                kAnswer = arr1[p];
                 p++;
             } else {
-                sorted[r] = arr2[q];
+                kAnswer = arr2[q];
                 q++;
+            }
+            if (r == k - 1) {
+                return kAnswer;
             }
             r++;
         }
-        while (p < len1) {
-            sorted[r++] = arr1[p++];
+        while (p < len1 && r <= k - 1) {
+            kAnswer = arr1[p];
+            p++;
+            r++;
         }
-        while (q < len2) {
-            sorted[r++] = arr2[q++];
+        while (q < len2 && r <= k - 1) {
+            kAnswer = arr2[q];
+            q++;
+            r++;
         }
-        return sorted[k - 1];
+        return kAnswer;
     }
 }
