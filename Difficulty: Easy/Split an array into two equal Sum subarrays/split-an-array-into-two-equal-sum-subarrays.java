@@ -31,15 +31,14 @@ class Solution {
         for (int i = 1; i < n; i++) {
             prefix[i] = prefix[i - 1] + arr[i];
         }
-        // pre-processing suffix sum
-        long[] suffix = new long[n];
-        suffix[n - 1] = arr[n - 1];
-        for (int i = n - 2; i >= 0; i--) {
-            suffix[i] = suffix[i + 1] + arr[i];
-        }
-        // to have a split ith element of prefix and (i + 1)th element of suffix should be same
-        for (int i = 0; i < n - 1; i++) {
-            if (prefix[i] == suffix[i + 1]) {
+        long suffix = 0L;
+        for (int i = n - 1; i > 0; i--) {
+            suffix += arr[i];
+            /*
+             * to have a split ith element of prefix and (i + 1)th 
+             * element of suffix should be same
+             */
+            if (prefix[i - 1] == suffix) {
                 return true;
             }
         }
