@@ -123,35 +123,19 @@ class Node
 class Tree {
     //Function to return list containing elements of left view of binary tree.
     ArrayList<Integer> leftView(Node root) {
-      ArrayList<Integer> view = new ArrayList<Integer>();
-      if (root == null) {
-          return view;
-      }
-      Queue<Pair> queue = new LinkedList<Pair>();
-      queue.offer(new Pair(root, 0));
-      while (!queue.isEmpty()) {
-          Pair current = queue.poll();
-          Node node = current.node;
-          int level = current.level;
-          if (view.size() == level) {
-              view.add(node.data);
-          }
-          if (node.left != null) {
-              queue.offer(new Pair(node.left, level + 1));
-          }
-          if (node.right != null) {
-              queue.offer(new Pair(node.right, level + 1));
-          }
-      }
-      return view;
+        ArrayList<Integer> view = new ArrayList<Integer>();
+        dfsTree(root, 0, view);
+        return view;
     }
     
-    class Pair {
-        Node node;
-        int level;
-        public Pair(Node node, int level) {
-            this.node = node;
-            this.level = level;
+    private void dfsTree(Node node, int level, ArrayList<Integer> view) {
+        if (node == null) {
+            return;
         }
+        if (view.size() == level) {
+            view.add(node.data);
+        }
+        dfsTree(node.left, level + 1, view);
+        dfsTree(node.right, level + 1, view);
     }
 }
