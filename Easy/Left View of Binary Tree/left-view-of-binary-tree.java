@@ -120,23 +120,22 @@ class Node
         left = right = null;
     }
 }*/
-class Tree
-{
+class Tree {
     //Function to return list containing elements of left view of binary tree.
     ArrayList<Integer> leftView(Node root) {
-      ArrayList<Integer> view = new ArrayList<Integer>();
-      dfsTree(root, view, 0);
-      return view;
+        ArrayList<Integer> view = new ArrayList<Integer>();
+        dfsTree(root, 0, view);
+        return view;
     }
     
-    private void dfsTree(Node node, ArrayList<Integer> view, int level) {
+    private void dfsTree(Node node, int level, ArrayList<Integer> view) {
         if (node == null) {
             return;
         }
         if (view.size() == level) {
             view.add(node.data);
         }
-        dfsTree(node.left, view, level + 1);
-        dfsTree(node.right, view, level + 1);
+        dfsTree(node.left, level + 1, view);
+        dfsTree(node.right, level + 1, view);
     }
 }
