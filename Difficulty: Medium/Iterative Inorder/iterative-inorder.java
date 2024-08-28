@@ -122,13 +122,17 @@ class Solution {
                 current = current.right;
             } else {
                 Node leftChild = current.left;
-                while (leftChild.right != null) {
+                while (leftChild.right != null && leftChild.right != current) {
                     leftChild = leftChild.right;
                 }
-                leftChild.right = current;
-                Node temp = current;
-                current = current.left;
-                temp.left = null;
+                if (leftChild.right == null) {
+                    leftChild.right = current;
+                    current = current.left;
+                } else {
+                    leftChild.right = null;
+                    path.add(current.data);
+                    current = current.right;
+                }
             }
         }
         return path;
