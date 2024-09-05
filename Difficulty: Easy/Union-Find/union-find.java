@@ -70,8 +70,14 @@ class Solution {
         int parentA = find(par, a);
         int parentB = find(par, b);
         if (parentA != parentB) {
-            par[parentA] = parentB;
-            rank[parentB] = 1;
+            if (rank[parentA] > rank[parentB]) {
+                par[parentB] = parentA;
+            } else if (rank[parentA] < rank[parentB]) {
+                par[parentA] = parentB;
+            } else {
+                par[parentA] = parentB;
+                rank[parentB] += 1;
+            }
         }
     }
     
