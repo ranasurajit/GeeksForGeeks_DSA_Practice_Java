@@ -29,20 +29,38 @@ class GFG
 //User function Template for Java
 
 class Solution {
+    /**
+     * TC: O(Nlog(M))
+     * SC: O(1)
+     */
     public int NthRoot(int n, int m) {
-        int low = 1;
+        if (n == 1) {
+            return m;
+        }
+        if (m == 1) {
+            return 1;
+        }
+        int low = 2;
         int high = m;
-        while (low <= high) {
+        while (low <= high) { // TC: O(log(M))
             int mid = low + (high - low) / 2;
-            int pow = (int) Math.pow(mid, n);
-            if (pow == m) {
+            double prod = product(mid, n); // TC: O(N)
+            if (prod == m) {
                 return mid;
-            } else if (pow < m) {
+            } else if (prod < m) {
                 low = mid + 1;
             } else {
                 high = mid - 1;
             }
         }
         return -1;
+    }
+    
+    private double product(int num, int times) {
+        double prod = 1;
+        for (int i = 1; i <= times; i++) {
+            prod *= num;
+        }
+        return prod;
     }
 }
