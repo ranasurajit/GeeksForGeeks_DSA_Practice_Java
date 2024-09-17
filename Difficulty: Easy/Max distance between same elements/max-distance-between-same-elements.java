@@ -11,7 +11,7 @@ class Solution {
      */
     public int maxDistance(int[] arr) {
         int n = arr.length;
-        HashMap<Integer, ArrayList> hm = new HashMap<Integer, ArrayList>(); // SC: O(N)
+        HashMap<Integer, ArrayList<Integer>> hm = new HashMap<Integer, ArrayList<Integer>>(); // SC: O(N)
         for (int i = 0; i < n; i++) { // TC: O(N)
             if (!hm.containsKey(arr[i])) {
                 hm.put(arr[i], new ArrayList<Integer>());
