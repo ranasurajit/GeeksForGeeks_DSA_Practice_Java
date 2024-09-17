@@ -28,19 +28,55 @@ class GFG{
 
 //User function Template for Java
 
-class Solution
-{
-    static int findSubArraySum(int Arr[], int N, int k)
-    {
-        Map<Integer, Integer> hm = new HashMap<Integer, Integer>();
-        hm.put(0, 1);
-        int prefixSum = 0;
+class Solution {
+    /**
+     * Optimal Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     * 
+     * @param nums
+     * @param n
+     * @param k
+     * @return
+     */
+    static int findSubArraySum(int Arr[], int N, int k) {
         int count = 0;
-        for (int i = 0; i < N; i++) {
-            prefixSum += Arr[i];
-            int diff = prefixSum - k;
-            count += hm.getOrDefault(diff, 0);
-            hm.put(prefixSum, hm.getOrDefault(prefixSum, 0) + 1);
+        int sum = 0;
+        HashMap<Integer, Integer> hm = new HashMap<Integer, Integer>(); // SC: O(N)
+        hm.put(0, 1);
+        for (int i = 0; i < N; i++) { // TC: O(N)
+            sum += Arr[i];
+            int diff = sum - k;
+            if (hm.containsKey(diff)) {
+                count += hm.get(diff);
+            }
+            hm.put(sum, hm.getOrDefault(sum, 0) + 1);
+        }
+        return count;
+    }
+    
+    /**
+     * Brute-Force Approach
+     * 
+     * TC: O(N^2)
+     * SC: O(1)
+     * 
+     * @param nums
+     * @param n
+     * @param k
+     * @return
+     */
+    static int findSubArraySumBruteForce(int Arr[], int N, int k) {
+        int count = 0;
+        for (int i = 0; i < N; i++) { // TC: O(N)
+            int sum = 0;
+            for (int j = i; j < N; j++) { // TC: O(N)
+                sum += Arr[j];
+                if (sum == k) {
+                    count++;
+                }
+            }
         }
         return count;
     }
