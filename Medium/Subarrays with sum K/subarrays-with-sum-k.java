@@ -42,9 +42,9 @@ class Solution {
      */
     static int findSubArraySum(int Arr[], int N, int k) {
         int count = 0;
-        int sum = 0;
-        HashMap<Integer, Integer> hm = new HashMap<Integer, Integer>(); // SC: O(N)
+        Map<Integer, Integer> hm = new HashMap<Integer, Integer>(); // SC: O(N)
         hm.put(0, 1);
+        int sum = 0;
         for (int i = 0; i < N; i++) { // TC: O(N)
             sum += Arr[i];
             int diff = sum - k;
