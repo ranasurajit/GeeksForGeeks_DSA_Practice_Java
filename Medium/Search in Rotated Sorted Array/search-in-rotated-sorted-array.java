@@ -39,22 +39,27 @@ public class GFG {
 // User function Template for Java
 
 class Solution {
+    /**
+     * TC: O(log(N))
+     * SC: O(1)
+     */
     int search(int[] arr, int key) {
+        int n = arr.length;
         int low = 0;
-        int high = arr.length - 1;
+        int high = n - 1;
         while (low <= high) {
             int mid = low + (high - low) / 2;
             if (arr[mid] == key) {
                 return mid;
             } else if (arr[mid] >= arr[low]) {
-                // left side is sorted
+                // left part sorted
                 if (key >= arr[low] && key < arr[mid]) {
                     high = mid - 1;
                 } else {
                     low = mid + 1;
                 }
             } else {
-                // right side is sorted
+                // right part is sorted
                 if (key > arr[mid] && key <= arr[high]) {
                     low = mid + 1;
                 } else {
