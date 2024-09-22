@@ -22,6 +22,10 @@ class GFG {
 // User function Template for Java
 
 class Solution {
+    /**
+     * TC: O(|str|)
+     * SC: O(1)
+     */
     int lps(String str) {
         int i = 0; // prefix can range from position 0 to n - 2
         int j = 1; // suffix can range from position 1 to n - 1
