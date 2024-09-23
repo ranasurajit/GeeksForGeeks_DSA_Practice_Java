@@ -6,7 +6,10 @@ import java.util.*;
 // User function Template for Java
 
 class Solution {
-
+    /**
+     * TC: O(log(N))
+     * SC: O(1)
+     */
     public long firstIndex(int arr[]) {
         int n = arr.length;
         int low = 0;
@@ -15,8 +18,8 @@ class Solution {
         while (low <= high) {
             int mid = low + (high - low) / 2;
             if (arr[mid] == 1) {
-                high = mid - 1;
                 minIndex = Math.min(minIndex, mid);
+                high = mid - 1;
             } else {
                 low = mid + 1;
             }
