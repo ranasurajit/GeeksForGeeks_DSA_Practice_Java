@@ -37,83 +37,47 @@ class GFG
 //User function Template for Java
 
 class Solution {
-    /**
-     * TC: O(R) + O(Rlog(C)) ~ O(Rlog(C))
-     * SC: O(1)
-     * 
-     * @param matrix
-     * @param R
-     * @param C
-     * @return
-     */
     int median(int matrix[][], int R, int C) {
-        // finding range
         int low = Integer.MAX_VALUE;
         int high = Integer.MIN_VALUE;
-        for (int i = 0; i < R; i++) { // TC: O(R)
+        for (int i = 0; i < R; i++) {
             low = Math.min(low, matrix[i][0]);
             high = Math.max(high, matrix[i][C - 1]);
         }
-        /**
-         * R and C are odd i.e. number of elements is R x C which is odd
-         * so we have only 1 element as median
-         */
-        int targetIndex = (R * C) / 2;
-        // Applying Binary Search
-        while (low <= high) { // TC: O(log(Range)) where Range = high - low i.e. constant
+        int total = R * C;
+        int target = total / 2;
+        while (low <= high) {
             int mid = low + (high - low) / 2;
-            // find number of elements less than mid value in matrix
-            int lessThanEquals = getLessThanEquals(matrix, R, C, mid);
-            if (lessThanEquals <= targetIndex) {
+            // find number of values less than mid value
+            int lessThan = getNumValuesLessThanMid(matrix, mid, R);
+            if (lessThan <= target) {
                 low = mid + 1;
             } else {
                 high = mid - 1;
             }
         }
-        return low;     
+        return low;
     }
     
-    /**
-     * TC: O(Rlog(C))
-     * SC: O(1)
-     * 
-     * @param matrix
-     * @param R
-     * @param C
-     * @param mid
-     * @return
-     */
-    private int getLessThanEquals(int[][] matrix, int R, int C, int mid) {
-        // finding sum of occurences of mid value in each row
+    private int getNumValuesLessThanMid(int[][] matrix, int mid, int R) {
         int count = 0;
         for (int i = 0; i < R; i++) {
             count += getUpperBound(matrix[i], mid);
         }
         return count;
     }
-
-    /**
-     * TC: O(log(C))
-     * SC: O(1)
-     * 
-     * @param row
-     * @param k
-     * @return
-     */
-    private int getUpperBound(int[] row, int k) {
+    
+    private int getUpperBound(int[] arr, int target) {
         int low = 0;
-        int high = row.length - 1;
-        int lessThan = row.length;
-        // Applying Binary Search
+        int high = arr.length - 1;
         while (low <= high) {
             int mid = low + (high - low) / 2;
-            if (row[mid] > k) {
-                lessThan = mid;
-                high = mid - 1;
-            } else {
+            if (arr[mid] <= target) {
                 low = mid + 1;
+            } else {
+                high = mid - 1;
             }
         }
-        return lessThan;
+        return low;
     }
 }
