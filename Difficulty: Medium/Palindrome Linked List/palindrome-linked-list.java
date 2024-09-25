@@ -101,10 +101,6 @@ class Solution {
         return true;
     }
     
-    /**
-     * TC: O(N/2)
-     * SC: O(1)
-     */
     private Node reverseLL(Node head) {
         Node prev = null;
         Node current = head;
@@ -117,10 +113,6 @@ class Solution {
         return prev;
     }
     
-    /**
-     * TC: O(N/2)
-     * SC: O(1)
-     */
     private Node middleLL(Node head) {
         Node slow = head;
         Node fast = head;
