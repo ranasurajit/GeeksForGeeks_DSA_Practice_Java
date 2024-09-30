@@ -108,42 +108,53 @@ class Node
 
 */
 class Solution {
+     /**
+     * TC: O(M + N)
+     * SC: O(M + N)
+     */
     // Function to return a list of integers denoting the node
     // values of both the BST in a sorted order.
     public List<Integer> merge(Node root1, Node root2) {
-        List<Integer> merged = new ArrayList<Integer>();
-        Stack<Node> st1 = new Stack<Node>();
-        Stack<Node> st2 = new Stack<Node>();
-        fill(root1, st1);
-        fill(root2, st2);
-        while (!st1.isEmpty() && !st2.isEmpty()) {
-            if (st1.peek().data > st2.peek().data) {
-                Node popped = st2.pop();
-                merged.add(popped.data);
-                fill(popped.right, st2);
+        List<Integer> result = new ArrayList<Integer>(); 
+        List<Integer> list1 = new ArrayList<Integer>(); // SC: O(M)
+        List<Integer> list2 = new ArrayList<Integer>(); // SC: O(N)
+        inorder(root1, list1);
+        inorder(root2, list2);
+        // Merging both sorted arrays
+        int m = list1.size();
+        int n = list2.size();
+        int p = 0; // pointer for list1
+        int q = 0; // pointer for list2
+        while (p < m && q < n) { // TC: O(M + N)
+            if (list1.get(p) < list2.get(q)) {
+                result.add(list1.get(p));
+                p++;
             } else {
-                Node popped = st1.pop();
-                merged.add(popped.data);
-                fill(popped.right, st1);
+                result.add(list2.get(q));
+                q++;
             }
         }
-        while (!st1.isEmpty()) {
-            Node popped = st1.pop();
-            merged.add(popped.data);
-            fill(popped.right, st1);
+        while (p < m) {
+            result.add(list1.get(p));
+            p++;
         }
-        while (!st2.isEmpty()) {
-            Node popped = st2.pop();
-            merged.add(popped.data);
-            fill(popped.right, st2);
+        while (q < n) {
+            result.add(list2.get(q));
+            q++;
         }
-        return merged;
+        return result;
     }
     
-    private void fill(Node root, Stack st) {
-        while (root != null) {
-            st.push(root);
-            root = root.left;
+    /**
+     * Inorder traversal of BST is always sorted
+     * Inorder - Left Node Right
+     */
+    private void inorder(Node root, List<Integer> list) {
+        if (root == null) {
+            return;
         }
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
     }
 }
