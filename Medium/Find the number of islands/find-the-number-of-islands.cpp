@@ -10,6 +10,11 @@ class Solution {
         { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }
     };
 
+    /**
+    * TC: O(N x M)
+    * SC: O(N x M) -  Recursion Stack space
+    * DFS take TC: O(N x M) as it visits all the grid cells
+    */
     // Function to find the number of islands.
     int numIslands(vector<vector<char>>& grid) {
         int n = grid.size();
