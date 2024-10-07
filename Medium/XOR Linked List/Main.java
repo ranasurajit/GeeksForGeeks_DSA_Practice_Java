@@ -59,19 +59,43 @@ class Node {
 class Solution {
     // function should insert the data to the front of the list
     static Node insert(Node head, int data) {
-        Node new_head = new Node(data);
-        new_head.npx = head;
-        return new_head;
+        Node newNode = new Node(data);
+        if (head == null) {
+            newNode.npx = head;
+            return newNode;
+        }
+        head.npx = XOR(newNode, head.npx);
+        return newNode;
     }
 
     // function to print the linked list
     static ArrayList<Integer> getList(Node head) {
-        Node cur = head;
-        ArrayList<Integer> al = new ArrayList<>();
-        while(cur!=null){
-            al.add(cur.data);
-            cur = cur.npx;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        Node prev = null;
+        Node current = head;
+        while (current != null) {
+            list.add(current.data);
+            Node next = XOR(current.npx, prev);
+            prev = current;
+            current = next;
         }
-        return al;
+        return list;
     }
+
+    // static Node insert(Node head, int data) {
+    //     Node new_head = new Node(data);
+    //     new_head.npx = head;
+    //     return new_head;
+    // }
+
+    // // function to print the linked list
+    // static ArrayList<Integer> getList(Node head) {
+    //     Node cur = head;
+    //     ArrayList<Integer> al = new ArrayList<>();
+    //     while(cur!=null){
+    //         al.add(cur.data);
+    //         cur = cur.npx;
+    //     }
+    //     return al;
+    // }
 }
