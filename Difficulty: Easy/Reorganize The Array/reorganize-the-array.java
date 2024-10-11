@@ -10,10 +10,29 @@ import java.util.HashSet;
 
 class Solution {
     /**
+     * In place re-arrangement
+     * TC: O(N)
+     * SC: O(1)
+     */
+    public List<Integer> rearrange(List<Integer> arr) {
+        int n = arr.size();
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            while (arr.get(i) != -1 && arr.get(i) != i) {
+                // swap target with arr.get(target)
+                int temp = arr.get(arr.get(i));
+                arr.set(arr.get(i), arr.get(i));
+                arr.set(i, temp);
+            }
+        }
+        return arr;
+    }
+    
+    /**
+     * Using HashSet
      * TC: O(N)
      * SC: O(N)
      */
-    public List<Integer> rearrange(List<Integer> arr) {
+    public List<Integer> rearrangeBetter(List<Integer> arr) {
         HashSet<Integer> hs = new HashSet<Integer>();
         List<Integer> arranged = new ArrayList<Integer>(); // SC: O(N)
         for (Integer it : arr) { // TC: O(N)
