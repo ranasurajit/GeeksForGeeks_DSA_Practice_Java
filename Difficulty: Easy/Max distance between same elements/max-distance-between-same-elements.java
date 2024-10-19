@@ -6,21 +6,24 @@ import java.util.Scanner;
 // } Driver Code Ends
 class Solution {
     /**
-     * TC:O(N)
-     * SC:O(N)
-     */ 
+     * TC: O(2N) ~ O(N)
+     * SC: O(N)
+     */
     public int maxDistance(int[] arr) {
         int n = arr.length;
-        HashMap<Integer, Integer> hm = new HashMap<Integer, Integer>(); // SC:O(N)
-        int maxDiff = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) { // TC:O(N)
-            if (hm.containsKey(arr[i])) {
-                maxDiff = Math.max(maxDiff, i - hm.get(arr[i]));
-            } else {
-                hm.put(arr[i], i);
+        HashMap<Integer, ArrayList<Integer>> hm = new HashMap<Integer, ArrayList<Integer>>(); // SC: O(N)
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (!hm.containsKey(arr[i])) {
+                hm.put(arr[i], new ArrayList<Integer>());
             }
+            hm.get(arr[i]).add(i);
         }
-        return maxDiff;
+        int max = Integer.MIN_VALUE;
+        for (Integer key : hm.keySet()) { // TC: O(N)
+            ArrayList<Integer> list = hm.get(key);
+            max = Math.max(max, list.get(list.size() - 1) - list.get(0));
+        }
+        return max;
     }
 }
 
