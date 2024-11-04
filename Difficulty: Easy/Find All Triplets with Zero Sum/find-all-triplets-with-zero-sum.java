@@ -6,16 +6,45 @@ import java.util.*;
 
 // } Driver Code Ends
 // User function Template for Java
+
 class Solution {
-    // public List<List<Integer>> findTriplets(int[] arr) {
-    //     // Your code here
-    // }
+    /**
+     * TC: O(2 x N ^ 2) ~ O(N ^ 2)
+     * SC: O(2 x N)     ~ O(N)
+     */
+    public List<List<Integer>> findTriplets(int[] arr) {
+        int n = arr.length;
+        HashMap<Integer, List<int[]>> hm = new HashMap<Integer, List<int[]>>(); // SC: O(N)
+        for (int i = 0; i < n - 1; i++) {                // TC: O(N)
+            for (int j = i + 1; j < n; j++) {            // TC: O(N)
+                int sum = arr[i] + arr[j];
+                if (!hm.containsKey(sum)) {
+                    hm.put(sum, new ArrayList<int[]>());
+                }
+                hm.get(sum).add(new int[] { i, j });
+            }
+        }
+        HashSet<List<Integer>> hs = new HashSet<List<Integer>>();               // SC: O(N)
+        for (int i = 0; i < n; i++) {                   // TC: O(N)
+            if (hm.containsKey(-1 * arr[i])) {
+                List<int[]> list = hm.get(-1 * arr[i]);
+                for (int[] indices : list) {            // TC: O(N)
+                    if (i != indices[0] && i != indices[1]) {
+                        List<Integer> triplet = Arrays.asList(i, indices[0], indices[1]);
+                        Collections.sort(triplet);
+                        hs.add(triplet);
+                    }
+                }
+            }
+        }
+        return new ArrayList<List<Integer>>(hs);
+    }
     
     /**
      * TC: O(N ^ 3)
      * SC: O(1)
      */
-    public List<List<Integer>> findTriplets(int[] arr) {
+    public List<List<Integer>> findTripletsNotEfficient(int[] arr) {
         int n = arr.length;
         List<List<Integer>> triplets = new ArrayList<List<Integer>>();
         for (int i = 0; i < n - 2; i++) {         // TC: O(N)
