@@ -7,6 +7,10 @@ import java.util.*;
 // } Driver Code Ends
 // User function Template for Java
 class Solution {
+    // public List<List<Integer>> findTriplets(int[] arr) {
+    //     // Your code here
+    // }
+    
     /**
      * TC: O(N ^ 3)
      * SC: O(1)
