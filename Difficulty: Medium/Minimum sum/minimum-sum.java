@@ -56,10 +56,10 @@ class Solution {
         while (p < num1.length() || q < num2.length()) {    // TC: O(N)
             int s = carry;
             if (p < num1.length()) {
-                s = s + Integer.valueOf(num1.charAt(p) + "");
+                s += Integer.valueOf(num1.charAt(p) - '0');
             }
             if (q < num2.length()) {
-                s = s + Integer.valueOf(num2.charAt(q) + "");
+                s += Integer.valueOf(num2.charAt(q) - '0');
             }
             carry = 0;
             if (s > 9) {
