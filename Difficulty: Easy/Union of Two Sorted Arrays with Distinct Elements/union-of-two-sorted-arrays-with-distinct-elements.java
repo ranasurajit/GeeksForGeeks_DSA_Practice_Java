@@ -42,6 +42,7 @@ class Main {
 
 // } Driver Code Ends
 
+
 // User function Template for Java
 
 // a,b : the arrays
@@ -49,35 +50,45 @@ class Solution {
     // Function to return a list containing the union of the two arrays.
     /**
      * TC: O(M + N)
-     * SC: O(M + N)
+     * SC: O(1)
      */
     public static ArrayList<Integer> findUnion(int a[], int b[]) {
         ArrayList<Integer> union = new ArrayList<Integer>();
-        TreeSet<Integer> hs = new TreeSet<Integer>();       // SC: O(M + N)
         int p = 0;
         int q = 0;
         int m = a.length;
         int n = b.length;
         while (p < m && q < n) {                           // TC: O(M + N)
             if (a[p] < b[q]) {
-                hs.add(a[p]);
+                checkAndAdd(union, a[p]);
                 p++;
             } else {
-                hs.add(b[q]);
+                checkAndAdd(union, b[q]);
                 q++;
             }
         }
         while (p < m) {
-            hs.add(a[p]);
+            checkAndAdd(union, a[p]);
             p++;
         }
         while (q < n) {
-            hs.add(b[q]);
+            checkAndAdd(union, b[q]);
             q++;
         }
-        for (Integer val : hs) {
-            union.add(val);
-        }
         return union;
+    }
+    
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
+    private static void checkAndAdd(ArrayList<Integer> union, int element) {
+        if (union.isEmpty()) {
+            union.add(element);
+        } else {
+            if (union.get(union.size() - 1) != element) {
+                union.add(element);
+            }
+        }
     }
 }
