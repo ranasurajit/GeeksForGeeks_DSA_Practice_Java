@@ -31,16 +31,20 @@ public class Main {
 // User function Template for Java
 
 class Solution {
+    /**
+     * TC: O(N)
+     * SC: O(1)
+     */
     void pushZerosToEnd(int[] arr) {
         int n = arr.length;
-        int p = 0; // pointer for 0 elements
+        int p = 0; // pointer for zero elements
         while (p < n && arr[p] != 0) {
             p++;
         }
         if (p == n) {
             return;
         }
-        int q = p + 1;
+        int q = p + 1; // pointer for non-zero elements
         while (q < n) {
             while (q < n && arr[q] == 0) {
                 q++;
