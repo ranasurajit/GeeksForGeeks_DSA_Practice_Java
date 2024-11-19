@@ -29,21 +29,21 @@ System.out.println("~");
 
 class Solution {
     /**
-     * TC: O(M + N)
+     * TC: O(N + K)
      * SC: O(1)
      */
     int search(String pat, String txt) {
-        int n = pat.length();
-        int m = txt.length();
+        int k = pat.length();
         int[] chars = new int[26];
-        for (int i = 0; i < n; i++) { // TC: O(N)
+        for (int i = 0; i < k; i++) { // TC: O(K)
             chars[pat.charAt(i) - 'a']++;
         }
+        int n = txt.length();
         int count = 0;
-        for (int i = 0, j = 0; j < m; j++) { // TC: O(M)
+        for (int i = 0, j = 0; j < n; j++) { // TC: O(N)
             chars[txt.charAt(j) - 'a']--;
-            if (j - i + 1 == n) {
-                if (allZeros(chars)) { // TC: O(26)
+            if (j - i + 1 == k) {
+                if (containsAllZeros(chars)) {
                     count++;
                 }
                 chars[txt.charAt(i) - 'a']++;
@@ -57,9 +57,9 @@ class Solution {
      * TC: O(26)
      * SC: O(1)
      */
-    private boolean allZeros(int[] chars) {
-        for (int c : chars) {
-            if (c != 0) {
+    private boolean containsAllZeros(int[] chars) {
+        for (int ch : chars) {
+            if (ch != 0) {
                 return false;
             }
         }
