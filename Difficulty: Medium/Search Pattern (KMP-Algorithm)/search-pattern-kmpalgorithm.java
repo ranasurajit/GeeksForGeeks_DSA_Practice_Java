@@ -31,51 +31,54 @@ class GFG {
 // User function Template for Java
 
 class Solution {
-
     /**
      * TC: O(M + N)
-     * SC: O(M), where M and N are length of 'pat' and 'txt' respectively
+     * SC: O(N)
      */
     ArrayList<Integer> search(String pat, String txt) {
-        int m = pat.length();
-        int n = txt.length();
+        int n = pat.length();
+        int m = txt.length();
         ArrayList<Integer> result = new ArrayList<Integer>();
-        int[] lps = computeLPS(pat, m);
-        int i = 0; // pointer for txt
-        int j = 0; // pointer for pat
-        while (i < n) {
-            if (j < m && txt.charAt(i) == pat.charAt(j)) {
+        int[] lps = computeLPS(pat, n); // TC: O(N), SC: O(N)
+        int i = 0;
+        int j = 0;
+        while (i < m) {                 // TC: O(M)
+            if (i < m && txt.charAt(i) == pat.charAt(j)) {
                 i++;
                 j++;
             }
-            if (j == m) {
+            if (j == n) {
                 result.add(i - j);
                 j = lps[j - 1];
-            } else {
-                if (i < n && txt.charAt(i) != pat.charAt(j)) {
-                    if (j != 0) {
-                        j = lps[j - 1];
-                    } else {
-                        i++;
-                    }
+            }
+            if (i < m && txt.charAt(i) != pat.charAt(j)) {
+                if (j != 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
                 }
             }
         }
         return result;
     }
     
-    private int[] computeLPS(String pat, int m) {
-        int[] lps = new int[m];
-        int len = 0;
+    /**
+     * TC: O(N)
+     * SC: O(N)
+     */
+    private int[] computeLPS(String pat, int n) {
+        int[] lps = new int[n];
+        lps[0] = 0;
         int i = 1;
-        while (i < m) {
-            if (pat.charAt(i) == pat.charAt(len)) {
-                len++;
-                lps[i] = len;
+        int j = 0;
+        while (i < n) {
+            if (pat.charAt(i) == pat.charAt(j)) {
+                lps[i] = j + 1;
                 i++;
+                j++;
             } else {
-                if (len != 0) {
-                    len = lps[len - 1];
+                if (j != 0) {
+                    j = lps[j - 1];
                 } else {
                     lps[i] = 0;
                     i++;
