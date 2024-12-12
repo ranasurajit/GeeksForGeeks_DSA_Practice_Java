@@ -31,10 +31,70 @@ class GFG {
 
 class Solution {
     /**
-     * TC: O(N)
+     * Binary Search Approach
+     * 
+     * TC: O(2 x log(N)) ~ O(log(N))
      * SC: O(1)
      */
     int countFreq(int[] arr, int target) {
+        int n = arr.length;
+        int lBound = lowerBound(arr, target, n);
+        if (lBound == n) {
+            return 0;
+        }
+        int uBound = upperBound(arr, target, n);
+        return uBound - lBound;
+    }
+    
+    /**
+     * Binary Search Approach
+     * 
+     * TC: O(log(N))
+     * SC: O(1)
+     */
+    private int lowerBound(int[] arr, int target, int n) {
+        int lbound = n;
+        int low = 0;
+        int high = n - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] >= target) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+    
+    /**
+     * Binary Search Approach
+     * 
+     * TC: O(log(N))
+     * SC: O(1)
+     */
+    private int upperBound(int[] arr, int target, int n) {
+        int lbound = n;
+        int low = 0;
+        int high = n - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] > target) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+    
+    /**
+     * Brute-Force Approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     */
+    int countFreqBruteForce(int[] arr, int target) {
         int count = 0;
         for (int it : arr) { // TC: O(N)
             if (it == target) {
