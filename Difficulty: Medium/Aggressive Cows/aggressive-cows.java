@@ -32,64 +32,62 @@ class GFG {
 // User function Template for Java
 class Solution {
     /**
-     * Optimal Approach - Using Binary Search
-     * 
-     * TC: O(N x log(K) + N x log(N))
+     * Optimal Approach (Using Binary Search)
+     *
+     * TC: O(N x log(N) + N x log(K)), where K = Max(stalls) - Min(stalls)
      * SC: O(1)
      */
     public static int aggressiveCows(int[] stalls, int k) {
         int n = stalls.length;
-        // sort the stalls by position
-        Arrays.sort(stalls);                   // TC: O(N x log(N))
+        Arrays.sort(stalls); // TC: O(N x log(N))
         int low = 1;
-        int high = stalls[n - 1] - stalls[0];
-        while (low <= high) {                  // TC: O(log(K))
+        int high = stalls[n - 1] - stalls[0]; // high can be max distance between extremes
+        int maxDist = 0;
+        while (low <= high) { // TC: O(log(K)), where K = Max(stalls) - Min(stalls)
             int mid = low + (high - low) / 2;
-            if (canBePlaced(stalls, k, mid)) { // TC: O(N)
+            if (canPlaceAllCows(mid, stalls, k, n)) { // TC: O(N)
+                maxDist = Math.max(maxDist, mid);
                 low = mid + 1;
             } else {
                 high = mid - 1;
             }
         }
-        return high;
+        return maxDist;
     }
     
     /**
-     * Brute-Force Approach - Using Linear Search
-     * 
-     * TC: O(K x N + N x log(N))
+     * Brute-Force Approach (Using Linear Search)
+     *
+     * TC: O(N x log(N) + K x N), where K = Max(stalls) - Min(stalls)
      * SC: O(1)
      */
     public static int aggressiveCowsBruteForce(int[] stalls, int k) {
         int n = stalls.length;
-        // sort the stalls by position
         Arrays.sort(stalls); // TC: O(N x log(N))
-        int low = stalls[0];
-        int high = stalls[n - 1];
-        for (int i = 1; i <= (high - low); i++) { // TC: O(K), where K = Max(stalls) - Min(stalls)
-            if (canBePlaced(stalls, k, i)) { // TC: O(N)
-                continue;
-            } else {
-                return i - 1;
+        int low = 1;
+        int high = stalls[n - 1] - stalls[0]; // high can be max distance between extremes
+        int maxDist = 0;
+        for (int i = low; i <= high; i++) { // TC: O(K), where K = Max(stalls) - Min(stalls)
+            if (canPlaceAllCows(i, stalls, k, n)) { // TC: O(N)
+                maxDist = Math.max(maxDist, i);
             }
         }
-        return -1;
+        return maxDist;
     }
     
     /**
      * TC: O(N)
      * SC: O(1)
      */
-    private static boolean canBePlaced(int[] stalls, int cows, int dist) {
-        int countCows = 1;
-        int lastPos = stalls[0];
-        for (int i = 1; i < stalls.length; i++) { // TC: O(N)
-            if (stalls[i] - lastPos >= dist) {
-                // cow can be placed at stalls[i]
-                countCows++;
-                lastPos = stalls[i];
+    private static boolean canPlaceAllCows(int dist, int[] stalls, int k, int n) {
+        int cowsPlaced = 1;
+        int lastPlaced = 0;
+        for (int i = 1; i < n; i++) {
+            if (stalls[i] - stalls[lastPlaced] >= dist) {
+                lastPlaced = i;
+                cowsPlaced++;
             }
         }
-        return countCows >= cows;
+        return cowsPlaced >= k;
     }
 }
