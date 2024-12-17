@@ -34,55 +34,77 @@ class GFG {
 
 class Solution {
     /**
-     * Optimal Approach (Using Binary Search)
+     * Optimal Approach (Binary Search)
      * 
-     * TC: O(N x log(K)), where K = Sum(arr) - Max(arr)
+     * TC: O(N + N x log(K)) ~ O(N x log(K)), where K = Sum(arr) - Max(arr)
      * SC: O(1)
      */
     public static int findPages(int[] arr, int k) {
         int n = arr.length;
-        if (n < k) {
-            /* 
-             * if number of books < number of students then it voilates 
-             * the rule - Each student receives atleast one book.
-             */
+        if (k > n) {
+            // violates - Each student receives atleast one book
             return -1;
         }
         int low = 0;
         int high = 0;
-        for (int item : arr) {
-            low = Math.max(low, item);
-            high += item;
+        for (int pages : arr) { // TC: O(N)
+            low = Math.max(low, pages);
+            high += pages;
         }
-        // Using Binary search
-        int result = 0;
+        int minPages = Integer.MAX_VALUE;
         while (low <= high) { // TC: O(log(K))
             int mid = low + (high - low) / 2;
-            if (wouldStudentsNotExceed(mid, arr, k, n)) { // TC: O(N)
-                // decrease pages from student to adjust
-                result = mid;
+            int allocated = allocatedStudents(mid, arr, n); // TC: O(N)
+            if (allocated <= k) {
+                minPages = mid;
                 high = mid - 1;
             } else {
                 low = mid + 1;
             }
         }
-        return result;
+        return minPages;
+    }
+    
+    /**
+     * Brute-Force Approach (Linear Search)
+     * 
+     * TC: O(N + K x N) ~ O(K x N), where K = Sum(arr) - Max(arr)
+     * SC: O(1)
+     */
+    public static int findPagesBruteForce(int[] arr, int k) {
+        int n = arr.length;
+        if (k > n) {
+            // violates - Each student receives atleast one book
+            return -1;
+        }
+        int low = 0;
+        int high = 0;
+        for (int pages : arr) { // TC: O(N)
+            low = Math.max(low, pages);
+            high += pages;
+        }
+        for (int i = low; i <= high; i++) { // TC: O(K)
+            if (allocatedStudents(i, arr, n) <= k) { // TC: O(N)
+                return i;
+            }
+        }
+        return -1;
     }
     
     /**
      * TC: O(N)
      * SC: O(1)
      */
-    private static boolean wouldStudentsNotExceed(int maxPages, int[] arr, int k, int n) {
-        int numStudents = 1;
+    private static int allocatedStudents(int allocation, int[] arr, int n) {
+        int students = 1;
         int sum = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) { // TC: O(N)
             sum += arr[i];
-            if (sum > maxPages) {
-                numStudents++;
+            if (sum > allocation) {
+                students++;
                 sum = arr[i];
             }
         }
-        return numStudents <= k;
+        return students;
     }
 }
