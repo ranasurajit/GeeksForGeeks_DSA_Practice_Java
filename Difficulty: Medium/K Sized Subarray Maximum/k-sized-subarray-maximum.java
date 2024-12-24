@@ -44,47 +44,53 @@ public class Main {
 class Solution {
     // Function to find maximum of each subarray of size k.
     /**
+     * Took two pointers i and j = 0 and increment j till window size of 'k' is
+     * reached
+     * 
+     * add index j to a Deque (as we can add and remove from both ends of it)
+     * remove all elements from beginning of a deque < arr[j]
+     * 
+     * Note: we will be storing indices in Deque
+     * 
+     * Window size: (j - i + 1)
+     * 
+     * when window size < k, then keep increasing j
+     * when window size = k,
+     * 1. add 1st element from beginning of deque to the resultant array/list
+     * 2. remove 1st element from beginning of deque if it = i
+     * 
+     * maintain the sliding window size of k, by incrementing both i an j
+     * 
      * TC: O(N)
-     * SC: O(k)
+     * SC: O(K)
+     * 
+     * @param arr
+     * @param k
+     * @return
      */
-    public ArrayList<Integer> max_of_subarrays(int k, int arr[]) {
+    public ArrayList<Integer> max_of_subarrays(int arr[], int k) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
         int n = arr.length;
-        ArrayList<Integer> windowMax = new ArrayList<Integer>();
-        if (n == 0) {
-            // if arr is empty
-            return windowMax;
-        }
-        Deque<Integer> deque = new ArrayDeque<Integer>(); // SC: O(k)
-        int index = 0;
-        // creating window of size 'k'
-        while (index < k) { // TC: O(k)
-            while (!deque.isEmpty() && arr[deque.peekLast()] <= arr[index]) {
-                /*
-                 * removing the indices from deque whose value in arr 
-                 * is less than equals incoming arr index value
-                 */
+        int i = 0; // pointer for start of sliding window
+        int j = 0; // pointer for end of sliding window
+        ArrayDeque<Integer> deque = new ArrayDeque<Integer>(); // O(K)
+        while (j < n) { // TC: O(N)
+            while (!deque.isEmpty() && arr[deque.peekLast()] < arr[j]) {
                 deque.pollLast();
             }
-            deque.offerLast(index);
-            index++;
-        }
-        windowMax.add(arr[deque.peekFirst()]);
-        // process for next windows starting from index 1 to n - k
-        for (int i = 1; i < n - k + 1; i++) { // TC: O(N - k)
-            while (!deque.isEmpty() && deque.peekFirst() <= i - 1) {
-                // removing the indices which are not part of current window of size k
-                deque.pollFirst();
+            deque.addLast(j);
+            if (j - i + 1 < k) {
+                j++;
+            } else if (j - i + 1 == k) {
+                result.add(arr[deque.peekFirst()]);
+                if (i == deque.peekFirst()) {
+                    deque.pollFirst();
+                }
+                // slide the window
+                i++;
+                j++;
             }
-            while (!deque.isEmpty() && arr[deque.peekLast()] <= arr[i + k - 1]) {
-                /*
-                 * removing the indices from deque whose value in arr 
-                 * is less than equals incoming arr index value
-                 */
-                deque.pollLast();
-            }
-            deque.offerLast(i + k - 1);
-            windowMax.add(arr[deque.peekFirst()]);
         }
-        return windowMax;
+        return result;
     }
 }
