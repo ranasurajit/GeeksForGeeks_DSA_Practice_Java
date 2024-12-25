@@ -44,6 +44,41 @@ class Solution {
     public void setMatrixZeroes(int[][] mat) {
         int n = mat.length;
         int m = mat[0].length;
+        int[] rows = new int[n]; // SC: O(N)
+        Arrays.fill(rows, 1);
+        int[] cols = new int[m]; // SC: O(M)
+        Arrays.fill(cols, 1);
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            for (int j = 0; j < m; j++) { // TC: O(M)
+                if (mat[i][j] == 0) {
+                    rows[i] = 0;
+                    cols[j] = 0;
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (rows[i] == 0) {
+                for (int j = 0; j < m; j++) { // TC: O(M)
+                    mat[i][j] = 0;
+                }
+            }
+        }
+        for (int i = 0; i < m; i++) { // TC: O(N)
+            if (cols[i] == 0) {
+                for (int j = 0; j < n; j++) { // TC: O(M)
+                    mat[j][i] = 0;
+                }
+            }
+        }
+    }
+    
+    /**
+     * TC: O(3 x (N x M)) ~ O(N x M)
+     * SC: O(N + M)
+     */
+    public void setMatrixZeroesHashSetApproach(int[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
         Set<Integer> rSet = new HashSet<Integer>(); // SC: O(N)
         Set<Integer> cSet = new HashSet<Integer>(); // SC: O(M)
         for (int i = 0; i < n; i++) { // TC: O(N)
