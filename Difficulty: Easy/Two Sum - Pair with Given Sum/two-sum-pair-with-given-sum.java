@@ -37,6 +37,8 @@ public class Main {
 
 class Solution {
     /**
+     * Using HashSet
+     * 
      * TC: O(N)
      * SC: O(N)
      */
@@ -49,6 +51,32 @@ class Solution {
                 return true;
             }
             hs.add(arr[i]);
+        }
+        return false;
+    }
+
+    /**
+     * Using Two Pointers
+     *
+     * TC: O(N + N x log(N)) ~ O(N x log(N))
+     * SC: O(1)
+     */
+    boolean twoSumTwoPointers(int arr[], int target) {
+        int n = arr.length;
+        Arrays.sort(arr); // TC: O(N x log(N))
+        int p = 0;     // left pointer
+        int q = n - 1; // right pointer
+        while (p < q) {   // TC: O(N)
+            int sum = arr[p] + arr[q];
+            if (sum == target) {
+                return true;
+            } else if (sum < target) {
+                // increase sum so increase left pointer
+                p++;
+            } else {
+                // decrease sum so decrease right pointer
+                q--;
+            }
         }
         return false;
     }
