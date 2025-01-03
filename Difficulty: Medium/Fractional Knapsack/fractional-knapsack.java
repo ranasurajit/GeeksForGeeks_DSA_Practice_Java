@@ -58,25 +58,29 @@ class Solution {
          */
         // SC: O(N)
         PriorityQueue<double[]> pq = new PriorityQueue<double[]>((double[] p, double[] q) -> {
-            return Double.compare(q[0], p[0]);
+           return Double.compare(q[0], p[0]); 
         });
-        for (int i = 0; i < n; i++) { // TC: O(N)
-            pq.offer(new double[] { ((double) val.get(i) / wt.get(i)), val.get(i), wt.get(i) });
+        for (int i = 0; i < n; i++) {            // TC: O(N)
+            pq.offer(new double[] {
+                ((double) val.get(i) / wt.get(i)),
+                val.get(i),
+                wt.get(i) }
+            );
         }
-        double maxValue = 0;
-        double currentWeight = 0;
-        while (!pq.isEmpty()) { // TC: O(N)
+        double currentWeight = 0.0;
+        double maxVal = 0.0;
+        while (!pq.isEmpty()) {                 // TC: O(N)
             double[] current = pq.poll();
             if (currentWeight + current[2] <= capacity) {
-                maxValue += current[1];
-                currentWeight = currentWeight + current[2];
+                currentWeight += current[2];
+                maxVal += current[1];
             } else {
-                double remaining = capacity - currentWeight;
-                double frac = current[0] * remaining;
-                maxValue += frac;
+                double leftWeight = capacity - currentWeight;
+                double fracValue = leftWeight * current[0];
+                maxVal += fracValue;
                 break;
             }
         }
-        return maxValue;
+        return maxVal;
     }
 }
