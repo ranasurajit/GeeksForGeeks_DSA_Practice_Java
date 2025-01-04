@@ -22,6 +22,7 @@ public class Main {
 }
 // } Driver Code Ends
 
+
 class Solution {
     /**
      * Using Two Pointers approach
@@ -32,10 +33,10 @@ class Solution {
     public int countTriplets(int[] arr, int target) {
         int n = arr.length;
         int count = 0;
-        for (int i = 0; i < n - 2; i++) {                           // TC O(N)
+        for (int i = 0; i < n - 2; i++) { // TC O(N)
             int start = i + 1;
             int end = n - 1;
-            while (start < end) {    // TC O(N)
+            while (start < end) {         // TC O(N)
                 int sum = arr[i] + arr[start] + arr[end];
                 if (sum == target) {
                     count++;
