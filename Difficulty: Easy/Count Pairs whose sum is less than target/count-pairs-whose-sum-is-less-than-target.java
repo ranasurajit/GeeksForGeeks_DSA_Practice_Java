@@ -22,6 +22,7 @@ class Solution {
         while (p < q) { // TC: O(N)
             int sum = arr[p] + arr[q];
             if (sum < target) {
+                // all elements (q - p) between arr[p] to arr[q--] will satisfy the condition
                 count += q - p;
                 p++;
             } else {
