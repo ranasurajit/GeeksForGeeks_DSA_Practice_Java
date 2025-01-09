@@ -93,7 +93,60 @@ class Node{
 */
 
 class Solution {
+    /**
+     * Optimal Approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     */
     Node divide(Node head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        Node evenHead = null;
+        Node oddHead = null;
+        Node evenTail = null;
+        Node oddTail = null;
+        Node current = head;
+        while (current != null) {
+            if (current.data % 2 == 0) {
+                // even value nodes
+                if (evenHead == null) {
+                    evenHead = evenTail = current;
+                } else {
+                    evenTail.next = current;
+                    evenTail = evenTail.next;
+                }
+            } else {
+                // odd value nodes
+                if (oddHead == null) {
+                    oddHead = oddTail = current;
+                } else {
+                    oddTail.next = current;
+                    oddTail = oddTail.next;
+                }
+            }
+            current = current.next;
+        }
+        if (evenHead == null) {
+            return oddHead;
+        }
+        if (oddHead == null) {
+            return evenHead;
+        }
+        // removing unwanted values from end of odd node
+        oddTail.next = null;
+        evenTail.next = oddHead;
+        return evenHead;
+    }
+    
+    /**
+     * Brute-Force Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     */
+    Node divideBruteForce(Node head) {
         if (head == null || head.next == null) {
             return head;
         }
