@@ -20,7 +20,38 @@ class Sorting {
 
 class Solution {
     /**
-     * Using Array Pre-processing
+     * Using Two Pointers Approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     * 
+     * @param arr
+     * @return
+     */
+    public int maxWater(int arr[]) {
+        int n = arr.length;
+        int i = 0; // left pointer
+        int j = n - 1; // right pointer
+        int leftMax = arr[0];
+        int rightMax = arr[n - 1];
+        int waterCollected = 0;
+
+        while (i < j) { // TC: O(N)
+            leftMax = Math.max(leftMax, arr[i]);
+            rightMax = Math.max(rightMax, arr[j]);
+            if (arr[i] < arr[j]) {
+                waterCollected += leftMax - arr[i];
+                i++;
+            } else {
+                waterCollected += rightMax - arr[j];
+                j--;
+            }
+        }
+        return waterCollected;
+    }
+    
+    /**
+     * Using Array Pre-processing Approach
      * 
      * TC: O(3 x N) ~ O(N)
      * SC: O(2 x N) ~ O(N)
@@ -28,7 +59,7 @@ class Solution {
      * @param arr
      * @return
      */
-    public int maxWater(int arr[]) {
+    public int maxWaterBruteForce(int arr[]) {
         int n = arr.length;
         /**
          * we need to calculate the maximum height of buildings
