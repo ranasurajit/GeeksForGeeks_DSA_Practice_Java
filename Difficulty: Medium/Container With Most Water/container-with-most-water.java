@@ -26,21 +26,22 @@ class Solution {
      * 
      * TC: O(N)
      * SC: O(1)
+     * 
+     * @param arr
+     * @return
      */
     public int maxWater(int arr[]) {
         int n = arr.length;
         int i = 0; // start pointer
         int j = n - 1; // end pointer
-        int leftMax = arr[0];
-        int rightMax = arr[n - 1];
-        int current = 0;
         int max = 0;
+        int current = 0;
         while (i < j) { // TC: O(N)
             if (arr[i] < arr[j]) {
-                current = arr[i] * (j - i);
+                current = (j - i) * arr[i];
                 i++;
             } else {
-                current = arr[j] * (j - i);
+                current = (j - i) * arr[j];
                 j--;
             }
             max = Math.max(max, current);
