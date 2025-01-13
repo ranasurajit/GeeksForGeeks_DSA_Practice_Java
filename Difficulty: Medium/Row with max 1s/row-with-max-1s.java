@@ -34,29 +34,79 @@ public class Main {
 // User function Template for Java
 
 class Solution {
+    /**
+     * Using Binary Search Approach
+     * 
+     * TC: O(M x log(N))
+     * SC: O(1)
+     * 
+     * @param arr
+     * @return
+     */
     public int rowWithMax1s(int arr[][]) {
-        int n = arr.length;
-        int m = arr[0].length;
-        // { count of 1's, row index }
-        int[] max = { 0, 0 };
-        for (int i = 0; i < n; i++) {
-            int[] current = { 0, 0 };
-            for (int j = 0; j < m; j++) {
-                if (arr[i][j] == 1) {
-                    current[0] = m - j;
-                    current[1] = i;
-                    break;
-                }
+        int maxIndex = -1;
+        int m = arr.length;
+        int n = arr[0].length;
+        int currentCount = 0;
+        int maxCount = 0;
+        for (int i = 0; i < m; i++) { // TC: O(M)
+            int lBound = lowerBound(arr[i], n, 1); // TC: O(log(N))
+            if (lBound == n) {
+                continue;
             }
-            // setting the maximum reached till row -> i
-            if (max[0] < current[0]) {
-                max = current;
+            int uBound = upperBound(arr[i], n, 1); // TC: O(log(N))
+            currentCount = uBound - lBound;
+            if (maxCount < currentCount) {
+                maxCount = currentCount;
+                maxIndex = i;
             }
         }
-        // if none of rows having 1's
-        if (max[0] == 0) {
-            return -1;
+        return maxIndex;
+    }
+    
+    /**
+     * TC: O(log(N))
+     * SC: O(1)
+     * 
+     * @param row
+     * @param n
+     * @param x
+     * @return
+     */
+    private int lowerBound(int[] row, int n, int x) {
+        int low = 0;
+        int high = n - 1;
+        while (low <= high) { // TC: O(log(N))
+            int mid = low + (high - low) / 2;
+            if (row[mid] >= x) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
         }
-        return max[1];
+        return low;
+    }
+
+    /**
+     * TC: O(log(N))
+     * SC: O(1)
+     * 
+     * @param row
+     * @param n
+     * @param x
+     * @return
+     */
+    private int upperBound(int[] row, int n, int x) {
+        int low = 0;
+        int high = n - 1;
+        while (low <= high) { // TC: O(log(N))
+            int mid = low + (high - low) / 2;
+            if (row[mid] > x) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
     }
 }
