@@ -59,28 +59,46 @@ class Main {
 
 
 class Solution {
-    //Function to return list containing vertices in Topological order. 
-    static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) {
-        int[] topo = new int[V];
-        int[] visited = new int[V];
-        Stack<Integer> st = new Stack<Integer>();
-        for (int i = 0; i < V; i++) {
-            if (visited[i] == 0) {
-                dfsGraph(i, adj, visited, st);
+    // Function to return list containing vertices in Topological order.
+    /**
+     * Topological Sort using DFS
+     * 
+     * TC: O(3 x V + E) ~ O(V + E)
+     * SC: O(3 x V) ~ O(V)
+     * 
+     * @param adj
+     * @return
+     */
+    static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<Integer> topoList = new ArrayList<Integer>();
+        int v = adj.size();
+        boolean[] visited = new boolean[v];       // SC: O(V)
+        Stack<Integer> st = new Stack<Integer>(); // SC: O(V)
+        for (int i = 0; i < v; i++) {             // TC: O(V)
+            if (!visited[i]) {
+                dfsGraph(i, adj, visited, st);    // TC: O(V + E), SC: O(V)
             }
         }
-        int index = 0;
-        while (!st.isEmpty()) {
-            topo[index++] = st.pop();
+        while (!st.isEmpty()) {                   // TC: O(V)
+            topoList.add(st.pop());
         }
-        return topo;
+        return topoList;
     }
     
-    private static void dfsGraph(int u, ArrayList<ArrayList<Integer>> adj, 
-        int[] visited, Stack<Integer> st) {
-        visited[u] = 1;
+    /**
+     * TC: O(V + E)
+     * SC: O(V)
+     * 
+     * @param u
+     * @param adj
+     * @param visited
+     * @param st
+     */
+    private static void dfsGraph(int u, ArrayList<ArrayList<Integer>> adj,
+            boolean[] visited, Stack<Integer> st) {
+        visited[u] = true;
         for (Integer v : adj.get(u)) {
-            if (visited[v] == 0) {
+            if (!visited[v]) {
                 dfsGraph(v, adj, visited, st);
             }
         }
