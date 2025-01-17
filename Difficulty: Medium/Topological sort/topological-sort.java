@@ -61,6 +61,46 @@ class Main {
 class Solution {
     // Function to return list containing vertices in Topological order.
     /**
+     * Topological Sort using BFS (Kahn's Algorithm)
+     * 
+     * TC: O(3 x V + 2 x E) ~ O(V + E)
+     * SC: O(2 x V) ~ O(V)
+     * 
+     * @param adj
+     * @return
+     */
+    static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<Integer> topoList = new ArrayList<Integer>();
+        int n = adj.size();
+        // we need to calculate the indegrees of each vertices
+        int[] indegrees = new int[n]; // SC: O(V)
+        for (ArrayList<Integer> u : adj) { // TC: O(V)
+            for (Integer v : u) { // TC: O(E)
+                indegrees[v]++;
+            }
+        }
+        // Now we need to push the vertices with indegree value as 0 in the Queue
+        Queue<Integer> queue = new LinkedList<Integer>(); // SC: O(V)
+        for (int i = 0; i < n; i++) { // TC: O(V)
+            if (indegrees[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        // starting the BFS
+        while (!queue.isEmpty()) { // TC: O(V + E)
+            Integer u = queue.poll();
+            topoList.add(u);
+            for (Integer v : adj.get(u)) {
+                indegrees[v]--;
+                if (indegrees[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+        return topoList;
+    }
+
+    /**
      * Topological Sort using DFS
      * 
      * TC: O(3 x V + E) ~ O(V + E)
@@ -69,7 +109,7 @@ class Solution {
      * @param adj
      * @return
      */
-    static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+    static ArrayList<Integer> topologicalSortDFS(ArrayList<ArrayList<Integer>> adj) {
         ArrayList<Integer> topoList = new ArrayList<Integer>();
         int v = adj.size();
         boolean[] visited = new boolean[v];       // SC: O(V)
