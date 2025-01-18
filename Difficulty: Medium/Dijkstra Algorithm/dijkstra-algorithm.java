@@ -57,37 +57,45 @@ class DriverClass
 
 class Solution
 {
-    //Function to find the shortest distance of all the vertices
-    //from the source vertex S.
-    static int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int S) {
-        int[] minDistance = new int[V];
-        Arrays.fill(minDistance, Integer.MAX_VALUE);
-        minDistance[S] = 0;
-        PriorityQueue<Pair> pq = new PriorityQueue<Pair>((Pair p, Pair q) -> p.dist - q.dist);
-        pq.offer(new Pair(0, S));
-        while (!pq.isEmpty()) {
-            Pair current = pq.poll();
-            int dist = current.dist;
-            int u = current.node;
-            for (int i = 0; i < adj.get(u).size(); i++) {
-                int edgeWeight = adj.get(u).get(i).get(1);
-                int edgeNode = adj.get(u).get(i).get(0);
-                if (dist + edgeWeight < minDistance[edgeNode]) {
-                    minDistance[edgeNode] = dist + edgeWeight;
-                    pq.offer(new Pair(dist + edgeWeight, edgeNode));
+    // Function to find the shortest distance of all the vertices
+    // from the source vertex src.
+    /**
+     * Dijkstra Algorithm Approach
+     * 
+     * TC: O((V + E) x log(V) + V) ~ O((V + E) x log(V))
+     * SC: O(2 x V) ~ O(V)
+     * 
+     * @param adj
+     * @param src
+     * @return
+     */
+    ArrayList<Integer> dijkstra(ArrayList<ArrayList<iPair>> adj, int src) {
+        ArrayList<Integer> minDistList = new ArrayList<Integer>();
+        int n = adj.size();
+        int[] minDist = new int[n]; // SC: O(V)
+        Arrays.fill(minDist, Integer.MAX_VALUE);
+        // distance from src to src is 0
+        minDist[src] = 0;
+        // Create a PriorityQueue (min-heap) in order of distance
+        // SC: O(V)
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p, q) -> p[0] - q[0]);
+        pq.offer(new int[] { 0, src }); // TC: O(log(1))
+        while (!pq.isEmpty()) { // TC: O(V)
+            int[] current = pq.poll();
+            int weight = current[0];
+            int u = current[1];
+            for (iPair neighbour : adj.get(u)) { // TC: O(E)
+                int v = neighbour.first;
+                int edgeWeight = neighbour.second;
+                if (weight + edgeWeight < minDist[v]) {
+                    minDist[v] = weight + edgeWeight;
+                    pq.offer(new int[] { weight + edgeWeight, v }); // TC: O(log(V))
                 }
             }
         }
-        return minDistance;
-    }
-    
-    static class Pair {
-        int dist;
-        int node;
-        
-        public Pair(int dist, int node) {
-            this.dist = dist;
-            this.node = node;
+        for (int item : minDist) { // TC: O(V)
+            minDistList.add(item);
         }
+        return minDistList;
     }
 }
