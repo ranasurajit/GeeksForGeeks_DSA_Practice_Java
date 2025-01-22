@@ -20,66 +20,84 @@ class Node {
 */
 
 class Solution {
-    // Function to add two numbers represented by linked list.
-    public static Node addTwoLists(Node num1, Node num2) {
+    /**
+     * Using Two Pointers Approach
+     * 
+     * TC: O(3 x (M + N)) ~ O(M + N)
+     * SC: O(1)
+     * 
+     * @param num1
+     * @param num2
+     * @return
+     */
+    static Node addTwoLists(Node num1, Node num2) {
         if (num1 == null) {
             return num2;
         }
         if (num2 == null) {
             return num1;
         }
-        while (num1 != null && num1.data == 0) {
-            num1 = num1.next;
-        }
-        while (num2 != null && num2.data == 0) {
-            num2 = num2.next;
-        }
-        Node revNum1 = reverseList(num1);
-        Node revNum2 = reverseList(num2);
+        // reverse both the linked-lists
+        num1 = reverseLL(num1); // TC: O(M)
+        num2 = reverseLL(num2); // TC: O(N)
+        // proceed with add operation
+        int carry = 0;
+        Node curr1 = num1;
+        Node curr2 = num2;
         Node dummy = new Node(-1);
         Node temp = dummy;
-        Node t1 = revNum1;
-        Node t2 = revNum2;
-        int carry = 0;
-        while (t1 != null || t2 != null) {
+        while (curr1 != null || curr2 != null) { // TC: O(M + N)
             int sum = carry;
-            if (t1 != null) {
-                sum += t1.data;
-                t1 = t1.next;
+            if (curr1 != null) {
+                sum += curr1.data;
+                curr1 = curr1.next;
             }
-            if (t2 != null) {
-                sum += t2.data;
-                t2 = t2.next;
+            if (curr2 != null) {
+                sum += curr2.data;
+                curr2 = curr2.next;
             }
-            int rem = sum % 10;
-            temp.next = new Node(rem);
-            carry = sum / 10;
+            if (sum > 9) {
+                carry = sum / 10;
+                sum = sum % 10;
+            } else {
+                carry = 0;
+            }
+            temp.next = new Node(sum);
             temp = temp.next;
-        }
-        if (dummy.next == null) {
-            return new Node(carry);
         }
         if (carry > 0) {
             temp.next = new Node(carry);
-            return reverseList(dummy.next);
         }
-        return reverseList(dummy.next);
+        // remove leading zeros after reversing the linked-list
+        return removeLeadingZeros(reverseLL(dummy.next)); // TC: O(2 x (M + N)) ~ O(M + N)
     }
     
-    private static Node reverseList(Node node) {
-        Node current = node;
+    /**
+     * TC: O(N)
+     * SC: O(1)
+     */
+    private static Node reverseLL(Node head) {
         Node prev = null;
-        
+        Node current = head;
         while (current != null) {
             Node temp = current.next;
             current.next = prev;
             prev = current;
             current = temp;
         }
-        
         return prev;
     }
-    
+
+    /**
+     * TC: O(N)
+     * SC: O(1)
+     */
+    private static Node removeLeadingZeros(Node head) {
+        while (head.data == 0) {
+            head = head.next;
+        }
+        return head;
+    }
 }
 
 //{ Driver Code Starts.
