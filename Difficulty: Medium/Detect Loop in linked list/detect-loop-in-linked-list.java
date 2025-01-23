@@ -78,17 +78,21 @@ class Node
 
 
 class Solution {
-    //Function to check if the linked list has a loop.
-    public static boolean detectLoop(Node head){
-        if (head == null || head.next == null) {
-            return false;
-        }
+    // Function to check if the linked list has a loop.
+    /**
+     * Using Fast and Slow pointers approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     */
+    public static boolean detectLoop(Node head) {
         Node slow = head;
         Node fast = head;
-        while (fast != null && fast.next != null) {
+        while (fast != null && fast.next != null) { // TC: O(N)
             slow = slow.next;
             fast = fast.next.next;
             if (slow == fast) {
+                // if there is a loop then slow and fast pointers would meet
                 return true;
             }
         }
