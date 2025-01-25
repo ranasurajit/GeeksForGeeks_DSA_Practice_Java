@@ -100,20 +100,52 @@ class Node
 */
 
 class Solution {
-    // Function to remove a loop in the linked list.
     /**
-     * TC: O(N)
-     * SC: O(N)
+     * Using Two (Fast and Slow) Pointers Approach
+     * 
+     * TC: O(2 x N) ~ O(N)
+     * SC: O(1)
+     * 
+     * @param head
      */
+    // Function to remove a loop in the linked list.
     public static void removeLoop(Node head) {
-        HashSet<Node> hs = new HashSet<Node>(); // SC: O(N)
-        Node current = head;
-        while (current != null) { // TC: O(N)
-            hs.add(current);
-            if (current.next != null && hs.contains(current.next)) {
-                current.next = null;
-            }
-            current = current.next;
+        if (head == null || head.next == null) {
+            return;
         }
+        Node prev = null;
+        Node slow = head;
+        Node fast = head;
+        // Move slow pointer by 1 step and fast pointer by 2 steps
+        while (fast != null && fast.next != null) { // TC: O(N)
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+        if (fast == null || fast.next == null) {
+            // no loop present
+            return;
+        }
+        // if head is the start node of the loop
+        if (slow == fast && fast == head) {
+            prev.next = null;
+            return;
+        }
+        // if node other than head node is the start node of the loop
+        // set fast = head;
+        // Move both slow and fast pointers by 1 step
+        fast = head;
+        while (fast != null) {                    // TC: O(N)
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+        prev.next = null;
     }
 }
