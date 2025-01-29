@@ -35,7 +35,7 @@ System.out.println("~");
 
 class Solution {
     /**
-     * DFS Approach
+     * Graph DFS Approach
      * 
      * TC: O(2 x V + 2 x E) ~ O(V + E)
      * SC: O(2 x V) ~ O(V)
@@ -43,6 +43,7 @@ class Solution {
     static int numProvinces(ArrayList<ArrayList<Integer>> adj, int V) {
         int n = adj.get(0).size();
         boolean[] visited = new boolean[V]; // SC: O(V)
+        
         int provinces = 0;
         for (int i = 0; i < V; i++) { // TC: O(V)
             if (!visited[i]) {
@@ -54,16 +55,18 @@ class Solution {
     }
     
     /**
-     * TC: O(V + 2 x E)
+     * DFS Approach
+     * 
+     * TC: O(V + 2 x E) ~ O(V + E)
      * SC: O(V)
      */
     private static void dfsGraph(int u, ArrayList<ArrayList<Integer>> adj,
         boolean[] visited, int n) {
         visited[u] = true;
-        for (int v = 0; v < n; v++) {
-            if (v != u && adj.get(u).get(v) == 1 && !visited[v]) {
-                dfsGraph(v, adj, visited, n);
+        for (int v = 0; v < n; v++) { // TC: O(E)
+            if (u != v && adj.get(u).get(v) == 1 && !visited[v]) {
+                dfsGraph(v, adj, visited, n); // TC: O(V + E)
             }
         }
     }
-}
+};
