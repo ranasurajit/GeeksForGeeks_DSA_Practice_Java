@@ -24,27 +24,47 @@ public class Main {
 // User function Template for Java
 class Solution {
     /**
-     * Using Recursion
+     * Using Recursion Approach
      * 
      * TC: O(log(E))
      * SC: O(log(E))
+     * 
+     * @param b
+     * @param e
+     * @return
      */
     double power(double b, int e) {
-        if (e == 0) {
+        if (e < 0) {
+            return 1 / pow(b, -1 * e);
+        }
+        return pow(b, e);
+    }
+    
+    /**
+     * Using Recursion
+     * 
+     * TC: O(log(N))
+     * SC: O(log(N))
+     * 
+     * @param x
+     * @param n
+     * @return
+     */
+    private double pow(double x, int n) {
+        if (n == 1) {
+            return x;
+        }
+        if (x == 1.0 || n == 0) {
             return 1.0;
         }
-        boolean isNeg = b < 0;
-        if (e < 0) {
-            return 1 / power(b, -1 * e);
+        double answer = pow(x, n / 2);
+        if ((n & 1) == 0) {
+            // n is even
+            return answer * answer;
+        } else {
+            // n is odd
+            return x * answer * answer;
         }
-        double answer = 1.0;
-        double half = power(b, e / 2);
-        answer = half * half;
-        if (e % 2 == 1) {
-            // power is odd
-            answer = b * answer;
-        }
-        return answer;
     }
 }
 
