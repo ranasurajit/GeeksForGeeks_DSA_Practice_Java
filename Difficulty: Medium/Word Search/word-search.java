@@ -40,10 +40,15 @@ class Solution {
     private static int m;
 
     /**
-     * Using Backtracking Approach
+     * Using Recursion and Backtracking Approach
      * 
      * TC: O(M x N x 3 ^ L)
      * SC: O(L)
+     * where L is the length of String 'word'
+     * 
+     * @param mat
+     * @param word
+     * @return
      */
     static public boolean isWordExist(char[][] mat, String word) {
         n = mat.length;
@@ -61,6 +66,14 @@ class Solution {
     /**
      * TC: O(3 ^ L)
      * SC: O(L)
+     * where L is the length of String 'word'
+     * 
+     * @param index
+     * @param row
+     * @param col
+     * @param mat
+     * @param word
+     * @return
      */
     private static boolean findWord(int index, int row, int col,
         char[][] mat, String word) {
