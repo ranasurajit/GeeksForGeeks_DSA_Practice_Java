@@ -125,24 +125,29 @@ class Node
 }
 */
 class Solution {
-    //Function to return the level order traversal of a tree.
-    static ArrayList <Integer> levelOrder(Node root) {
-        ArrayList<Integer> traversal = new ArrayList<Integer>();
-        if (root == null) {
-            return null;
-        }
-        Queue<Node> queue = new LinkedList<Node>();
+    /**
+     * TC: O(N)
+     * SC: O(N)
+     */
+    public ArrayList<ArrayList<Integer>> levelOrder(Node root) {
+        ArrayList<ArrayList<Integer>> path = new ArrayList<ArrayList<Integer>>();
+        Queue<Node> queue = new LinkedList<Node>(); // SC: O(N)
         queue.offer(root);
-        while (!queue.isEmpty()) {
-            Node current = queue.poll();
-            traversal.add(current.data);
-            if (current.left != null) {
-                queue.offer(current.left);
+        while (!queue.isEmpty()) { // TC: O(N)
+            int size = queue.size();
+            ArrayList<Integer> levelList = new ArrayList<Integer>();
+            for (int i = 0; i < size; i++) {
+                Node current = queue.poll();
+                levelList.add(current.data);
+                if (current.left != null) {
+                    queue.offer(current.left);
+                }
+                if (current.right != null) {
+                    queue.offer(current.right);
+                }
             }
-            if (current.right != null) {
-                queue.offer(current.right);
-            }
+            path.add(levelList);
         }
-        return traversal;
+        return path;
     }
 }
