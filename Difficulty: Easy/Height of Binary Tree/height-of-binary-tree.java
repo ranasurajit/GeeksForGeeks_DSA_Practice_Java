@@ -124,6 +124,8 @@ class Node
 class Solution {
     // Function to find the height of a binary tree.
     /**
+     * Using DFS Approach
+     *
      * TC: O(N)
      * SC: O(N)
      */
