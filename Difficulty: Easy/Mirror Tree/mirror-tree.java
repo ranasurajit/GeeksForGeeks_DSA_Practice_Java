@@ -128,19 +128,20 @@ class Node
 class Solution {
     // Function to convert a binary tree into its mirror tree.
     /**
-     * TC: O(N) - all nodes are visited
-     * SC: O(H) ~ O(N) in worst case (skewed Binary Tree). 
-     * where H = Recursion stack which is height of Tree
+     * DFS Approach
+     * 
+     * TC: O(N)
+     * SC: O(N) - in case of Skewed Trees
      */
     void mirror(Node node) {
         if (node == null) {
             return;
         }
-        // swapping the nodes left <==> right
-        Node temp = node.right;
-        node.right = node.left;
-        node.left = temp;
-        // making recursion calls to perform swapping
+        // swapping node's left and right children
+        Node temp = node.left;
+        node.left = node.right;
+        node.right = temp;
+        // calling the same for left and right sub-trees
         mirror(node.left);
         mirror(node.right);
     }
