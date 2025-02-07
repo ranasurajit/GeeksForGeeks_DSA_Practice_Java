@@ -101,24 +101,40 @@ class Node
 */
 
 class Solution {
+    /**
+     * Using DFS Approach
+     * 
+     * TC: O(N + 2 x log(N)) ~ O(N + log(N))
+     * SC: O(N + 3 x log(N)) ~ O(N + log(N))
+     * 
+     * @param root
+     * @return
+     */
     ArrayList<Integer> boundaryTraversal(Node node) {
         ArrayList<Integer> path = new ArrayList<Integer>();
         path.add(node.data);
-        if (!isLeaf(node)) {
-            // insert left boundary
-            insertLeftBoundary(node, path);
-            // insert leaf nodes
-            insertLeafNodes(node, path);
-            // insert right boundary
-            insertRightBoundary(node, path);
+        if (!isLeafNode(node)) {
+            // get left boundary
+            leftBoundary(node, path); // TC: O(log(N)), SC: O(log(N))
+            // get leaf nodes boundary
+            leafBoundary(node, path); // TC: O(N), SC: O(N)
+            // get right boundary
+            rightBoundary(node, path); // TC: O(log(N)), SC: O(2 x log(N))
         }
         return path;
     }
     
-    private void insertLeftBoundary(Node node, ArrayList<Integer> path) {
-        Node leftNode = node.left;
+    /**
+     * TC: O(log(N)), as only left side nodes are traversed
+     * SC: O(log(N))
+     * 
+     * @param root
+     * @param path
+     */
+    private void leftBoundary(Node root, ArrayList<Integer> path) {
+        Node leftNode = root.left;
         while (leftNode != null) {
-            if (isLeaf(leftNode)) {
+            if (isLeafNode(leftNode)) {
                 break;
             }
             path.add(leftNode.data);
@@ -129,23 +145,20 @@ class Solution {
             }
         }
     }
-    
-    private void insertLeafNodes(Node node, ArrayList<Integer> path) {
-        if (node == null) {
-            return;
-        }
-        if (isLeaf(node)) {
-            path.add(node.data);
-        }
-        insertLeafNodes(node.left, path);
-        insertLeafNodes(node.right, path);
-    }
-    
-    private void insertRightBoundary(Node node, ArrayList<Integer> path) {
-        Node rightNode = node.right;
-        Stack<Integer> st = new Stack<Integer>();
+
+    /**
+     * TC: O(log(N)), as only right side nodes are traversed
+     * SC: O(2 x log(N))
+     * 
+     * @param root
+     * @param path
+     */
+    private void rightBoundary(Node root, ArrayList<Integer> path) {
+        Node rightNode = root.right;
+        // needed as we need to print in reverse order
+        Stack<Integer> st = new Stack<Integer>(); // SC: O(log(N))
         while (rightNode != null) {
-            if (isLeaf(rightNode)) {
+            if (isLeafNode(rightNode)) {
                 break;
             }
             st.push(rightNode.data);
@@ -159,8 +172,33 @@ class Solution {
             path.add(st.pop());
         }
     }
-    
-    private boolean isLeaf(Node node) {
-        return node.left == null && node.right == null;
+
+    /**
+     * TC: O(N), need to traverse all nodes
+     * SC: O(N)
+     * 
+     * @param root
+     * @param path
+     */
+    private void leafBoundary(Node root, ArrayList<Integer> path) {
+        if (root == null) {
+            return;
+        }
+        if (isLeafNode(root)) {
+            path.add(root.data);
+        }
+        leafBoundary(root.left, path);
+        leafBoundary(root.right, path);
+    }
+
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     * 
+     * @param root
+     * @return
+     */
+    private boolean isLeafNode(Node root) {
+        return root != null && root.left == null && root.right == null;
     }
 }
