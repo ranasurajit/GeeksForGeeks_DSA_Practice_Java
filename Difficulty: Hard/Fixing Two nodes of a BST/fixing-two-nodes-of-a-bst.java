@@ -137,29 +137,93 @@ class Node {
 */
 
 class Solution {
+    private Node prev;
+    private Node first;
+    private Node second;
+    private Node temp;
 
     /**
-     * Using In-order Traversal
+     * Optimal Approach: Using In-order Traversal
      * 
-     * TC: O(2 x N + N x log(N)) ~ O(N x log(N))
-     * SC: O(4 x N) ~ O(N)
+     * TC: O(N)
+     * SC: O(N)
+     * 
+     * @param root
      */
     void correctBST(Node root) {
-        // getting the actual path from incorrect BST
-        ArrayList<Integer> path = new ArrayList<Integer>();       // SC: O(N)
-        inorder(root, path);                                      // TC: O(N), SC: O(N)
-        ArrayList<Integer> sorted = new ArrayList<Integer>(path); // SC: O(N)
-        // getting the expected path for correct BST
-        Collections.sort(sorted);                                 // TC: O(N x log(N))
-        int[] index = { 0 };
-        inorderFixBST(root, sorted, index);                       // TC: O(N), SC: O(N)
+        inorderDFS(root);
+        if (second == null) {
+            swapNodesValues(first, temp);
+        } else {
+            swapNodesValues(first, second);
+        }
     }
     
     /**
      * TC: O(N)
      * SC: O(N)
+     * 
+     * @param root
      */
-    private void inorder(Node root, ArrayList<Integer> path) {
+    private void inorderDFS(Node root) {
+        if (root == null) {
+            return;
+        }
+        inorderDFS(root.left);
+        if (prev != null && root.data < prev.data) {
+            if (first == null) {
+                first = prev;
+                temp = root;
+            } else {
+                second = root;
+            }
+        }
+        prev = root;
+        inorderDFS(root.right);
+    }
+    
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     * 
+     * @param node1
+     * @param node2
+     */
+    private void swapNodesValues(Node node1, Node node2) {
+        int tempRoot = node2.data;
+        node2.data = node1.data;
+        node1.data = tempRoot;
+    }
+    
+    /**
+     * Using In-order Traversal
+     * 
+     * TC: O(2 x N + N x log(N)) ~ O(N x log(N))
+     * SC: O(4 x N) ~ O(N)
+     * 
+     * @param root
+     */
+    void correctBSTBruteForce(Node root) {
+        // current path (should have been sorted for BST)
+        List<Integer> path = new ArrayList<Integer>(); // SC: O(N)
+        inorder(root, path); // TC: O(N), SC: O(N)
+        List<Integer> sorted = new ArrayList<Integer>(path); // SC: O(N)
+        // expected sorted array for BST
+        Collections.sort(sorted); // TC: O(N x log(N))
+        int[] index = { 0 };
+        inorderCorrection(root, sorted, index); // TC: O(N), SC: O(N)
+    }
+    
+    /**
+     * Inorder Traversal
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     * 
+     * @param root
+     * @param path
+     */
+    private void inorder(Node root, List<Integer> path) {
         if (root == null) {
             return;
         }
@@ -169,16 +233,23 @@ class Solution {
     }
     
     /**
+     * Inorder Traversal
+     * 
      * TC: O(N)
      * SC: O(N)
+     * 
+     * @param root
+     * @param sorted
+     * @param index
      */
-    private void inorderFixBST(Node root, ArrayList<Integer> sortedPath, int[] index) {
+    private void inorderCorrection(Node root,
+            List<Integer> sorted, int[] index) {
         if (root == null) {
             return;
         }
-        inorderFixBST(root.left, sortedPath, index);
-        root.data = sortedPath.get(index[0]);
+        inorderCorrection(root.left, sorted, index);
+        root.data = sorted.get(index[0]);
         index[0]++;
-        inorderFixBST(root.right, sortedPath, index);
+        inorderCorrection(root.right, sorted, index);
     }
 }
