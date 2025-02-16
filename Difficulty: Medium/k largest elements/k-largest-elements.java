@@ -10,24 +10,29 @@ class Solution {
     /**
      * Using Min-Heap (PriorityQueue) Approach
      * 
-     * TC: O(N + K)
+     * TC: O(K x log(K) + 2 x (N - K) x log(K) + K x log(K)) ~ O(N x log(K))
      * SC: O(K)
+     * 
+     * @param arr
+     * @param k
+     * @return
      */
     public ArrayList<Integer> kLargest(int[] arr, int k) {
         int n = arr.length;
         ArrayList<Integer> result = new ArrayList<Integer>();
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>(); // SC: O(K)
+        // Using a min-heap to store always k elements in Heap
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>();
         for (int i = 0; i < k; i++) { // TC: O(K)
-            pq.offer(arr[i]);
+            pq.offer(arr[i]); // TC: O(log(K))
         }
         for (int i = k; i < n; i++) { // TC: O(N - K)
             if (arr[i] > pq.peek()) {
-                pq.poll();
-                pq.offer(arr[i]);
+                pq.poll(); // TC: O(log(K))
+                pq.offer(arr[i]); // TC: O(log(K))
             }
         }
-        while (!pq.isEmpty()) {      // TC: O(K)
-            result.add(0, pq.poll());
+        while (!pq.isEmpty()) { // TC: O(K)
+            result.add(0, pq.poll()); // TC: O(log(K))
         }
         return result;
     }
