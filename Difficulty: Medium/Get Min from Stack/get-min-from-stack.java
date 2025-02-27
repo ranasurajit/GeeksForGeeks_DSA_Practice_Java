@@ -34,42 +34,67 @@ class Get_Min_From_Stack {
 
 
 class Solution {
+
     private Stack<Integer> st;
-    private PriorityQueue<Integer> pq;
+    private int minValue;
     
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
     public Solution() {
         st = new Stack<Integer>();
-        pq = new PriorityQueue<Integer>();
+        minValue = Integer.MAX_VALUE;
     }
 
     // Add an element to the top of Stack
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
     public void push(int x) {
+        if (st.isEmpty()) {
+            minValue = x;
+        } else {
+            if (x < minValue) {
+                st.push(minValue);
+                minValue = x;
+            }
+        }
         st.push(x);
-        pq.offer(x);
     }
 
     // Remove the top element from the Stack
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
     public void pop() {
         if (st.isEmpty()) {
             return;
         }
-        int popped = st.pop();
-        pq.remove(popped);
+        int peek = st.peek();
+        st.pop();
+        if (peek == minValue && !st.isEmpty()) {
+            minValue = st.pop();
+        }
     }
 
     // Returns top element of the Stack
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
     public int peek() {
-        if (st.isEmpty()) {
-            return -1;
-        }
-        return st.peek();
+        return st.isEmpty() ? -1 : st.peek();
     }
 
     // Finds minimum element of Stack
+    /**
+     * TC: O(1)
+     * SC: O(1)
+     */
     public int getMin() {
-        if (st.isEmpty()) {
-            return -1;
-        }
-        return pq.peek();
+        return st.isEmpty() ? -1 : minValue;
     }
 }
