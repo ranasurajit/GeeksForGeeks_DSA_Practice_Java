@@ -34,10 +34,9 @@ class Get_Min_From_Stack {
 
 
 class Solution {
-
-    private Stack<Integer> st;
+    private final Stack<Integer> st;
     private int minValue;
-    
+        
     /**
      * TC: O(1)
      * SC: O(1)
@@ -51,6 +50,8 @@ class Solution {
     /**
      * TC: O(1)
      * SC: O(1)
+     * 
+     * @param x
      */
     public void push(int x) {
         if (st.isEmpty()) {
@@ -75,7 +76,7 @@ class Solution {
         }
         int peek = st.peek();
         st.pop();
-        if (peek == minValue && !st.isEmpty()) {
+        if (minValue == peek && !st.isEmpty()) {
             minValue = st.pop();
         }
     }
@@ -84,17 +85,27 @@ class Solution {
     /**
      * TC: O(1)
      * SC: O(1)
+     * 
+     * @return
      */
     public int peek() {
-        return st.isEmpty() ? -1 : st.peek();
+        if (st.isEmpty()) {
+            return -1;
+        }
+        return st.peek();
     }
 
     // Finds minimum element of Stack
     /**
      * TC: O(1)
      * SC: O(1)
+     * 
+     * @return
      */
     public int getMin() {
-        return st.isEmpty() ? -1 : minValue;
+        if (st.isEmpty()) {
+            return -1;
+        }
+        return minValue;
     }
 }
