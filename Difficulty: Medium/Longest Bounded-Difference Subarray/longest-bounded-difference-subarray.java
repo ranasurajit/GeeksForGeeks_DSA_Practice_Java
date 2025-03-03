@@ -22,37 +22,38 @@ class Solution {
         ArrayDeque<Integer> minDeque = new ArrayDeque<Integer>(); // SC: O(N / 2)
         ArrayDeque<Integer> maxDeque = new ArrayDeque<Integer>(); // SC: O(N / 2)
         int maxLength = 0;
-        int minIndex = 0;
-        int maxIndex = 0;
+        int startIndex = 0;
+        int endIndex = 0;
         while (j < n) { // TC: O(N)
-            while (!minDeque.isEmpty() && arr[j] <= arr[minDeque.peekLast()]) {
+            while (!minDeque.isEmpty() && arr[minDeque.peekLast()] >= arr[j]) {
                 minDeque.pollLast();
             }
             minDeque.addLast(j);
-            while (!maxDeque.isEmpty() && arr[j] >= arr[maxDeque.peekLast()]) {
+            while (!maxDeque.isEmpty() && arr[maxDeque.peekLast()] <= arr[j]) {
                 maxDeque.pollLast();
             }
             maxDeque.addLast(j);
             while (arr[maxDeque.peekFirst()] - arr[minDeque.peekFirst()] > x) {
-                // slide the window
-                i++;
-                // remove calculations before sliding i pointer
-                if (!minDeque.isEmpty() && minDeque.peekFirst() < i) {
+                // remove all calculations from ith index
+                if (!minDeque.isEmpty() && minDeque.peekFirst() == i) {
                     minDeque.pollFirst();
                 }
-                if (!maxDeque.isEmpty() && maxDeque.peekFirst() < i) {
+                if (!maxDeque.isEmpty() && maxDeque.peekFirst() == i) {
                     maxDeque.pollFirst();
                 }
+                // slide the index
+                i++;
             }
-            if (maxDeque.peekFirst() - minDeque.peekFirst() <= x && j - i + 1 > maxLength) {
+            if (arr[maxDeque.peekFirst()] - arr[minDeque.peekFirst()] <= x &&
+                maxLength < (j - i + 1)) {
                 maxLength = j - i + 1;
-                minIndex = i;
-                maxIndex = j;
+                startIndex = i;
+                endIndex = j;
             }
             j++;
         }
         ArrayList<Integer> result = new ArrayList<Integer>();
-        for (i = minIndex; i <= maxIndex; i++) { // TC: O(K)
+        for (i = startIndex; i <= endIndex; i++) { // TC: O(K = endIndex - startIndex + 1)
             result.add(arr[i]);
         }
         return result;
