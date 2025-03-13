@@ -36,120 +36,146 @@ public class GFG {
 // } Driver Code Ends
 
 
+
 class Solution {
-    // Function to return max value that can be put in knapsack of capacity.
-    static int knapSack(int capacity, int val[], int wt[]) {
+    /**
+     * Approach IV : Using Space Optimization Approach
+     * 
+     * TC: O(N x W)
+     * SC: O(2 x W) ~ O(W)
+     */
+    static int knapsack(int W, int val[], int wt[]) {
         int n = wt.length;
-        // return solveRecursion(n - 1, capacity, val, wt);
-        // int[][] dp = new int[n + 1][capacity + 1];
-        // for (int i = 0; i <= n; i++) {
-        //     for (int j = 0; j <= capacity; j++) {
-        //         dp[i][j] = -1;
-        //     }
-        // }
-        // return solveMemoization(n - 1, capacity, val, wt, dp);
-        return solveTabulation(capacity, val, wt);
+        // Initialization
+        int[] current = new int[W + 1];
+        int[] prev = new int[W + 1];
+        // Iterative Call - convert dp[i] as current and dp[i - 1] as prev
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            for (int j = 1; j < W + 1; j++) { // TC: O(W)
+                if (wt[i - 1] <= j) {
+                    // we have two options - pick or not pick so take Maximum of them
+                    current[j] = Math.max((val[i - 1] + prev[j - wt[i - 1]]), prev[j]);
+                } else {
+                    // we certainly cannot pick as picking the item goes beyond knapsack capacity
+                    current[j] = prev[j];
+                }
+            }
+            prev = current.clone();
+        }
+        return prev[W];
     }
     
     /**
-     * Using Tabulation
+     * Approach III : Using Tabulation Approach
      * 
-     * TC: O(N x W)
+     * TC: O(N + W + N x W) ~ O(N x W)
      * SC: O(N x W)
      */
-    private static int solveTabulation(int w, int val[], int wt[]) {
+    static int knapsackTabulation(int W, int val[], int wt[]) {
         int n = wt.length;
-        // return solveRecursion(n - 1, capacity, val, wt);
-        int[][] dp = new int[n + 1][w + 1];
-        // base case in Recursion is converted to Initialization in Tabulation
-        for (int i = 0; i < n + 1; i++) {
-            for (int j = 0; j < w + 1; j++) {
-                if (i == 0 || j == 0) {
-                    dp[i][j] = 0;
-                }
-            }
+        // Initialization
+        int[][] dp = new int[n + 1][W + 1]; // as n and W are the states - SC: O(N x W)
+        for (int i = 0; i < n + 1; i++) { // TC: O(N)
+            dp[i][0] = 0;
         }
-        for (int i = 1; i < n + 1; i++) {
-            for (int j = 1; j < w + 1; j++) {
-                // convert index to (i - 1) and w to j
+        for (int j = 0; j < W + 1; j++) { // TC: O(W)
+            dp[0][j] = 0;
+        }
+        // Iterative Call - convert (n, W) to (i, j)
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            for (int j = 1; j < W + 1; j++) { // TC: O(W)
                 if (wt[i - 1] <= j) {
-                    dp[i][j] = 
-                        Math.max(val[i - 1] + dp[i - 1][j - wt[i - 1]], dp[i - 1][j]);
+                    // we have two options - pick or not pick so take Maximum of them
+                    dp[i][j] = Math.max((val[i - 1] + dp[i - 1][j - wt[i - 1]]),
+                        dp[i - 1][j]);
                 } else {
+                    // we certainly cannot pick as picking the item goes beyond knapsack capacity
                     dp[i][j] = dp[i - 1][j];
                 }
             }
         }
-        return dp[n][w];
+        return dp[n][W];
     }
-
+    
     /**
-     * Using Memoization
+     * Approach II : Using Memoization Approach
      * 
      * TC: O(N x W)
-     * SC: O(N x W + N)
+     * SC: O(N x W + (N + W))
      */
-    private static int solveMemoization(int index, int w, int val[], int wt[], int[][] dp) {
-        // base case - minimum valid testcase
-        if (w == 0) {
+    static int knapsackMemoization(int W, int val[], int wt[]) {
+        int n = wt.length;
+        int[][] memo = new int[n + 1][W + 1]; // as n and W are the states - SC: O(N x W)
+        for (int i = 0; i < n + 1; i++) { // TC: O(N)
+            for (int j = 0; j < W + 1; j++) { // TC: O(W)
+                memo[i][j] = -1;
+            }
+        }
+        return solveMemoization(n, W, val, wt, memo);
+    }
+    
+    /**
+     * Using Memoization Approach
+     * 
+     * TC: O(N x W)
+     * SC: O(N + W)
+     */
+    private static int solveMemoization(int n, int W, int[] val, int[] wt, int[][] memo) {
+        // Base Case
+        if (n == 0 || W == 0) {
             return 0;
         }
-        if (index == 0) {
-            return wt[0] <= w ? val[0] : 0;
+        // Memoization Check
+        if (memo[n][W] != -1) {
+            return memo[n][W];
         }
-        if (dp[index][w] != -1) {
-            return dp[index][w];
-        }
-        /**
-         * if wt[index] <= w, i.e current weight is less than 
-         * capacity 'w' then we have two choices 
-         * 1. to pick
-         * 2. not to pick
-         * 
-         * so we need to take maximum of them to fill the knapsack
-         */
-        if (wt[index] <= w) {
-            return dp[index][w] = 
-                Math.max(
-                    val[index] + solveMemoization(index - 1, w - wt[index], val, wt, dp),
-                    solveMemoization(index - 1, w, val, wt, dp)
-                );
+        // Recursion Calls
+        if (wt[n - 1] <= W) {
+            // we have two options - pick or not pick
+            // pick
+            int pick = val[n - 1] + solveMemoization(n - 1, W - wt[n - 1], val, wt, memo);
+            // not pick
+            int notpick = solveMemoization(n - 1, W, val, wt, memo);
+            return memo[n][W] = Math.max(pick, notpick);
         } else {
-            // we have no option to pick this
-            return dp[index][w] = solveMemoization(index - 1, w, val, wt, dp);
+            // we certainly cannot pick as picking the item goes beyond knapsack capacity
+            return memo[n][W] = solveMemoization(n - 1, W, val, wt, memo);
         }
     }
- 
+    
     /**
-     * Using Recursion
+     * Approach I : Using Recursion Approach
      * 
      * TC: O(2 ^ N)
-     * SC: O(2 ^ N)
+     * SC: O(N)
      */
-    private static int solveRecursion(int index, int w, int val[], int wt[]) {
-        // base case - minimum valid testcase
-        if (w == 0) {
+    static int knapsackRecursion(int W, int val[], int wt[]) {
+        int n = wt.length;
+        return solveRecursion(n, W, val, wt);
+    }
+    
+    /**
+     * Using Recursion Approach
+     * 
+     * TC: O(2 ^ N)
+     * SC: O(N)
+     */
+    private static int solveRecursion(int n, int W, int[] val, int[] wt) {
+        // Base Case
+        if (n == 0 || W == 0) {
             return 0;
         }
-        if (index == 0) {
-            return wt[0] <= w ? val[0] : 0;
-        }
-        /**
-         * if wt[index] <= w, i.e current weight is less than 
-         * capacity 'w' then we have two choices 
-         * 1. to pick
-         * 2. not to pick
-         * 
-         * so we need to take maximum of them to fill the knapsack
-         */
-        if (wt[index] <= w) {
-            return Math.max(
-                val[index] + solveRecursion(index - 1, w - wt[index], val, wt),
-                solveRecursion(index - 1, w, val, wt)
-            );
+        // Recursion Calls
+        if (wt[n - 1] <= W) {
+            // we have two options - pick or not pick
+            // pick
+            int pick = val[n - 1] + solveRecursion(n - 1, W - wt[n - 1], val, wt);
+            // not pick
+            int notpick = solveRecursion(n - 1, W, val, wt);
+            return Math.max(pick, notpick);
         } else {
-            // we have no option to pick this
-            return solveRecursion(index - 1, w, val, wt);
+            // we certainly cannot pick as picking the item goes beyond knapsack capacity
+            return solveRecursion(n - 1, W, val, wt);
         }
     }
 }
