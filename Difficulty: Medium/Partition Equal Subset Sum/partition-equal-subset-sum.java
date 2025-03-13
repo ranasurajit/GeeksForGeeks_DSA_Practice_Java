@@ -34,11 +34,10 @@ class GFG {
 
 class Solution {
     /**
-     * Using DP Approach
+     * Approach II : Using Memoization Approach
      *
-     * TC: O(N x T + N)
+     * TC: O(N + N x T) ~ O(N x T)
      * SC: O(N x T + N)
-     * where T = sum
      */
     static boolean equalPartition(int arr[]) {
         int n = arr.length;
@@ -47,59 +46,96 @@ class Solution {
             sum += arr[i];
         }
         if (sum % 2 != 0) {
-            // sum is odd so equal partition is not possible
+            // odd sum cannot be partioned to form two equal sum subsets
             return false;
         }
         int target = sum / 2;
-        return isSubsetSum(arr, n, target); // TC: O(N x T), SC: O(N x T + N)
-    }
-    
-    /**
-     * Using DP Approach (Memoization)
-     *
-     * TC: O(N x T)
-     * SC: O(N x T + N)
-     * where T = sum
-     */
-    private static boolean isSubsetSum(int[] arr, int n, int sum) {
-        int[][] dp = new int[n + 1][sum + 1];
-        for (int[] dp1D : dp) {
-            Arrays.fill(dp1D, -1);
+        int[][] memo = new int[n + 1][target + 1]; // SC: O(N x T)
+        for (int[] memoItem : memo) {
+            Arrays.fill(memoItem, -1);
         }
-        return solveMemoization(arr, n, sum, dp);
+        // now the problem gets converted to subset sum problem where target = sum / 2
+        return solveMemoization(n, arr, target, memo);
     }
     
     /**
-     * Using Memoization
+     * Using Memoization Approach
      *
      * TC: O(N x T)
-     * SC: O(N x T + N)
-     * where T = target
+     * SC: O(N)
      */
-    private static boolean solveMemoization(int[] arr, int n, int sum, int[][] dp) {
-        // Base case
-        if (sum == 0) {
+    private static boolean solveMemoization(int n, int[] arr, int target, int[][] memo) {
+        // Base Case
+        if (target == 0) {
             return true;
         }
-        if (n == 0 && sum != 0) {
+        if (n == 0) {
             return false;
         }
-        // memoization call
-        if (dp[n][sum] != -1) {
-            return dp[n][sum] == 1;
+        // Memoization Check
+        if (memo[n][target] != -1) {
+            return memo[n][target] == 1;
         }
-        // recursion call
-        if (arr[n - 1] <= sum) {
-            // we have two options whether to pick or notpick
-            boolean optionOne = solveMemoization(arr, n - 1, sum - arr[n - 1], dp) ||
-                                solveMemoization(arr, n - 1, sum, dp);
-            dp[n][sum] = optionOne ? 1 : 0;
-            return optionOne;
+        // Recursive Calls
+        if (arr[n - 1] <= target) {
+            // we have options to pick or not pick
+            Boolean pick = solveMemoization(n - 1, arr, target - arr[n - 1], memo);
+            Boolean notpick = solveMemoization(n - 1, arr, target, memo);
+            Boolean result = pick || notpick;
+            memo[n][target] = result ? 1 : 0;
+            return result;
         } else {
-            // we cannot choose this option
-            boolean optionTwo = solveMemoization(arr, n - 1, sum, dp);
-            dp[n][sum] = optionTwo ? 1 : 0;
-            return optionTwo;
+            // we don't have an option to pick anyways
+            Boolean result = solveMemoization(n - 1, arr, target, memo);
+            memo[n][target] = result ? 1 : 0;
+            return result;
+        }
+    }
+    
+    /**
+     * Approach I : Using Recursion Approach
+     *
+     * TC: O(N + 2 ^ N) ~ O(2 ^ N)
+     * SC: O(N)
+     */
+    static boolean equalPartitionRecursion(int arr[]) {
+        int n = arr.length;
+        int sum = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            sum += arr[i];
+        }
+        if (sum % 2 != 0) {
+            // odd sum cannot be partioned to form two equal sum subsets
+            return false;
+        }
+        int target = sum / 2;
+        // now the problem gets converted to subset sum problem where target = sum / 2
+        return solveRecursion(n, arr, target);
+    }
+    
+    /**
+     * Using Recursion Approach
+     *
+     * TC: O(2 ^ N)
+     * SC: O(N)
+     */
+    private static boolean solveRecursion(int n, int[] arr, int target) {
+        // Base Case
+        if (target == 0) {
+            return true;
+        }
+        if (n == 0) {
+            return false;
+        }
+        // Recursive Calls
+        if (arr[n - 1] <= target) {
+            // we have options to pick or not pick
+            Boolean pick = solveRecursion(n - 1, arr, target - arr[n - 1]);
+            Boolean notpick = solveRecursion(n - 1, arr, target);
+            return pick || notpick;
+        } else {
+            // we don't have an option to pick anyways
+            return solveRecursion(n - 1, arr, target);
         }
     }
 }
