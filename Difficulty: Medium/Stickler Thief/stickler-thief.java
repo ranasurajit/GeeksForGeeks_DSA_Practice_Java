@@ -24,14 +24,59 @@ class GFG {
 // } Driver Code Ends
 
 
+
+
 class Solution {
+    /**
+     * Approach IV : Using Space Optimization Approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     */
+    public int findMaxSum(int arr[]) {
+        int n = arr.length;
+        int prev2 = 0;
+        int prev = 0;
+        int current = 0;
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            if (i > 1) {
+                current = Math.max(arr[i - 1] + prev2, prev);
+            } else {
+                current = Math.max(arr[i - 1], prev);
+            }
+            prev2 = prev;
+            prev = current;
+        }
+        return prev;
+    }
+
+    /**
+     * Approach III : Using Tabulation Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     */
+    public int findMaxSumTabulation(int arr[]) {
+        int n = arr.length;
+        int[] dp = new int[n + 1]; // SC: O(N)
+        dp[0] = 0;
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            if (i > 1) {
+                dp[i] = Math.max(arr[i - 1] + dp[i - 2], dp[i - 1]);
+            } else {
+                dp[i] = Math.max(arr[i - 1], dp[i - 1]);
+            }
+        }
+        return dp[n];
+    }
+
     /**
      * Approach II : Using Memoization Approach
      * 
      * TC: O(N)
      * SC: O(N + N)
      */
-    public int findMaxSum(int arr[]) {
+    public int findMaxSumMemoization(int arr[]) {
         int n = arr.length;
         int[] memo = new int[n + 1]; // SC: O(N)
         Arrays.fill(memo, -1);
