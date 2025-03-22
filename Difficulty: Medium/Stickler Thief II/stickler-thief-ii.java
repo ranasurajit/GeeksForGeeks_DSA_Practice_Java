@@ -46,12 +46,73 @@ class GFG {
 
 class Solution {
     /**
+     * Approach IV : Using Space Optimization Approach
+     * 
+     * TC: O(2 x N)
+     * SC: O(2 x N)
+     */
+    int maxValue(int[] arr) {
+        int n = arr.length;
+        int[] optArr1 = new int[n - 1]; // SC: O(N)
+        int[] optArr2 = new int[n - 1]; // SC: O(N)
+        for (int i = 0; i < n - 1; i++) { // TC: O(N)
+            optArr1[i] = arr[i];
+            optArr2[i] = arr[i + 1];
+        }
+        int[] prev2 = { 0, 0 };   // SC: O(1)
+        int[] prev = { 0, 0 };    // SC: O(1)
+        int[] current = { 0, 0 }; // SC: O(1)
+        for (int i = 1; i < n; i++) { // TC: O(N)
+            if (i > 1) {
+                current[0] = Math.max(optArr1[i - 1] + prev2[0], prev[0]);
+                current[1] = Math.max(optArr2[i - 1] + prev2[1], prev[1]);
+            } else {
+                current[0] = Math.max(optArr1[i - 1], prev[0]);
+                current[1] = Math.max(optArr2[i - 1], prev[1]);
+            }
+            prev2 = prev.clone();
+            prev = current.clone();
+        }
+        return Math.max(prev[0], prev[1]);
+    }
+
+    /**
+     * Approach III : Using Tabulation Approach
+     * 
+     * TC: O(2 x N)
+     * SC: O(4 x N)
+     */
+    int maxValueTabulation(int[] arr) {
+        int n = arr.length;
+        int[] optArr1 = new int[n - 1]; // SC: O(N)
+        int[] optArr2 = new int[n - 1]; // SC: O(N)
+        for (int i = 0; i < n - 1; i++) { // TC: O(N)
+            optArr1[i] = arr[i];
+            optArr2[i] = arr[i + 1];
+        }
+        int[] dp1 = new int[n]; // SC: O(N)
+        dp1[0] = 0;
+        int[] dp2 = new int[n]; // SC: O(N)
+        dp2[0] = 0;
+        for (int i = 1; i < n; i++) { // TC: O(N)
+            if (i > 1) {
+                dp1[i] = Math.max(optArr1[i - 1] + dp1[i - 2], dp1[i - 1]);
+                dp2[i] = Math.max(optArr2[i - 1] + dp2[i - 2], dp2[i - 1]);
+            } else {
+                dp1[i] = Math.max(optArr1[i - 1], dp1[i - 1]);
+                dp2[i] = Math.max(optArr2[i - 1], dp2[i - 1]);
+            }
+        }
+        return Math.max(dp1[n - 1], dp2[n - 1]);
+    }
+
+    /**
      * Approach II : Using Memoization Approach
      * 
      * TC: O(3 x N)
-     * SC: O(5 x N)
+     * SC: O(4 x N + 2 x N)
      */
-    int maxValue(int[] arr) {
+    int maxValueMemoization(int[] arr) {
         int n = arr.length;
         int[] optArr1 = new int[n - 1]; // SC: O(N)
         int[] optArr2 = new int[n - 1]; // SC: O(N)
