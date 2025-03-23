@@ -25,14 +25,69 @@ class GFG {
 
 
 // User function Template for Java
+
+
+// User function Template for Java
 class Solution {
+    /**
+     * Approach IV : Using Space Optimization Approach
+     *
+     * TC: O(N)
+     * SC: O(1)
+     */
+    public int countWays(String digits) {
+        int n = digits.length();
+        int prev2 = 1;
+        int prev1 = digits.charAt(0) == '0' ? 0 : 1;
+        for (int i = 2; i <= n; i++) {
+            int singleDigit = Integer.parseInt(digits.substring(i - 1, i));
+            int current = 0;
+            if (singleDigit >= 1 && singleDigit <= 9) {
+                current += prev1;
+            }
+            int doubleDigit = Integer.parseInt(digits.substring(i - 2, i));
+            if (doubleDigit >= 10 && doubleDigit <= 26) {
+                // if number <= 26 then only decoding is possible
+                current += prev2;
+            }
+            prev2 = prev1;
+            prev1 = current;
+        }
+        return prev1;
+    }
+
+    /**
+     * Approach III : Using Tabulation Approach
+     *
+     * TC: O(N)
+     * SC: O(N)
+     */
+    public int countWaysTabulation(String digits) {
+        int n = digits.length();
+        int[] dp = new int[n + 1]; // SC: O(N)
+        dp[0] = 1; // reverse of if (index == n) return 1;
+        dp[1] = digits.charAt(0) == '0' ? 0 : 1;
+        for (int i = 2; i <= n; i++) {
+            int singleDigit = Integer.parseInt(digits.substring(i - 1, i));
+            if (singleDigit >= 1 && singleDigit <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            int doubleDigit = Integer.parseInt(digits.substring(i - 2, i));
+            if (doubleDigit >= 10 && doubleDigit <= 26) {
+                // if number <= 26 then only decoding is possible
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[n];
+    }
+
     /**
      * Approach II : Using Memoization Approach
      *
      * TC: O(N)
      * SC: O(N + N)
      */
-    public int countWays(String digits) {
+    public int countWaysMemoization(String digits) {
         int n = digits.length();
         int[] memo = new int[n + 1]; // SC: O(N)
         Arrays.fill(memo, -1);
