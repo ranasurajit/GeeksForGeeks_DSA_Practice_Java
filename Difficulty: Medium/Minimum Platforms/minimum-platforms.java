@@ -44,12 +44,40 @@ class Solution {
     // Function to find the minimum number of platforms required at the
     // railway station such that no train waits.
     /**
-     * Approach : Using Sweep Line Algorithm
+     * Approach II : Using Sorting and Two Pointers Approach
+     *
+     * TC: O(N + 2 x N x log(N)) ~ O(N x log(N))
+     * SC: O(1)
+     */
+    static int findPlatform(int arr[], int dep[]) {
+        int n = arr.length;
+        Arrays.sort(arr); // TC: O(log(N))
+        Arrays.sort(dep); // TC: O(log(N))
+        int count = 0;
+        int maxCount = 0;
+        int i = 0; // pointer for array 'arr'
+        int j = 0; // pointer for array 'dep'
+        while (i < n && j < n) { // TC: O(N)
+            if (arr[i] <= dep[j]) {
+                count++;
+                i++;
+            } else {
+                count--;
+                j++;
+            }
+            maxCount = Math.max(maxCount, count);
+        }
+        maxCount = Math.max(maxCount, count);
+        return maxCount;
+    }
+
+    /**
+     * Approach I : Using Sweep Line Algorithm
      *
      * TC: O(3 x N x log(N)) ~ O(N x log(N))
      * SC: O(N)
      */
-    static int findPlatform(int arr[], int dep[]) {
+    static int findPlatformApproachI(int arr[], int dep[]) {
         TreeMap<Integer, Integer> timeline = new TreeMap<Integer, Integer>();
         for (int i = 0; i < arr.length; i++) { // TC: O(N)
             timeline.put(arr[i], timeline.getOrDefault(arr[i], 0) + 1); // TC: O(log(N))
@@ -57,12 +85,12 @@ class Solution {
         for (int i = 0; i < dep.length; i++) { // TC: O(N)
             timeline.put(dep[i] + 1, timeline.getOrDefault(dep[i] + 1, 0) - 1); // TC: O(log(N))
         }
-        int maxParallelEvents = 0;
-        int currentEvents = 0;
+        int maxOverlaps = 0;
+        int overlaps = 0;
         for (Integer key : timeline.keySet()) { // TC: O(N)
-            currentEvents += timeline.get(key); // TC: O(log(N))
-            maxParallelEvents = Math.max(maxParallelEvents, currentEvents);
+            overlaps += timeline.get(key); // TC: O(log(N))
+            maxOverlaps = Math.max(maxOverlaps, overlaps);
         }
-        return maxParallelEvents;
+        return maxOverlaps;
     }
 }
