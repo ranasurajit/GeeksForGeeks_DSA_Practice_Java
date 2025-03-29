@@ -43,33 +43,42 @@ class GfG {
 
 
 class Solution {
-    //Function to find the maximum profit and the number of jobs done.
-    int[] JobScheduling(Job arr[], int n) {
-        // sort the jobs in descending order of profit to perform greedy solution
-        Arrays.sort(arr, (p, q) -> q.profit - p.profit);
-        // calculating the range for array from 0 to max(deadline)
-        int maximumDeadline = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            maximumDeadline = Math.max(maximumDeadline, arr[i].deadline);
+    /**
+     * Approach : Using Greedy Approach
+     * 
+     * TC: O(N + N x log(N) + N x K) ~ O(N x log(N) + N x K)
+     * SC: O(2 x N + K) ~ O(N + K)
+     * 
+     * where K = average of deadline of N deadlines
+     */
+    public ArrayList<Integer> jobSequencing(int[] deadline, int[] profit) {
+        int n = deadline.length;
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        int[][] sequence = new int[n][2]; // SC: O(2 x N)
+        int maxDeadline = -1;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            sequence[i] = new int[] { deadline[i], profit[i] };
+            maxDeadline = Math.max(maxDeadline, deadline[i]);
         }
-        int[] sequence = new int[maximumDeadline + 1];
-        Arrays.fill(sequence, -1);
-        int profit = 0;
-        int jobs = 0;
-        for (int i = 0; i < n; i++) {
-            // we will fill the job with max profit with max deadline value if empty
-            for (int j = arr[i].deadline; j > 0; j--) {
-                if (sequence[j] == -1) {
-                    // if the job slot is free
-                    sequence[j] = arr[i].id;
-                    profit += arr[i].profit;
-                    jobs++;
+        // sort the sequence in descending order of profit
+        Arrays.sort(sequence, (a, b) -> b[1] - a[1]); // TC: O(N x log(N))
+        int jobsCount = 0;
+        int totalProfit = 0;
+        int[] slot = new int[maxDeadline + 1]; // SC: O(K)
+        Arrays.fill(slot, -1);
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            for (int j = sequence[i][0]; j >= 1; j--) { // TC: O(K)
+                if (slot[j] == -1) {
+                    jobsCount++;
+                    slot[j] = i;
+                    totalProfit += sequence[i][1];
                     break;
                 }
             }
         }
-        int[] jobsDone = new int[]{ jobs, profit };
-        return jobsDone;
+        result.add(jobsCount);
+        result.add(totalProfit);
+        return result;
     }
 }
 
