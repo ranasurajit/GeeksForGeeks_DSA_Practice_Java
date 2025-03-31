@@ -36,25 +36,37 @@ class GFG {
 
 class Solution {
     // Function to return a list containing the DFS traversal of the graph.
-    public ArrayList<Integer> dfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
-        boolean[] visited = new boolean[V];
-        ArrayList<Integer> traversal = new ArrayList<Integer>();
-        for (int i = 0; i < V; i++) {
+    /**
+     * Approach: Using DFS on Graph Approach
+     * 
+     * TC: O(2 x V + 2 x E) ~ O(V + E)
+     * SC: O(2 x V) ~ O(V)
+     */
+    public ArrayList<Integer> dfs(ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<Integer> dfsPath = new ArrayList<Integer>();
+        int n = adj.size();
+        boolean[] visited = new boolean[n]; // SC: O(V)
+        for (int i = 0; i < n; i++) { // TC: O(V)
             if (!visited[i]) {
-                dfsGraph(adj, i, visited, traversal);
+                dfsGraph(i, adj, visited, dfsPath); // TC: O(V + 2 x E), SC: O(V)
             }
         }
-        return traversal;
+        return dfsPath;
     }
     
-    private void dfsGraph(ArrayList<ArrayList<Integer>> adj, int index, 
-        boolean[] visited, ArrayList<Integer> traversal) {
-        visited[index] = true;
-        traversal.add(index);
-        for (Integer it : adj.get(index)) {
-            if (!visited[it]) {
-                dfsGraph(adj, it, visited, traversal);
+    /**
+     * TC: O(V + 2 x E)
+     * SC: O(V)
+     */
+    private void dfsGraph(int u, ArrayList<ArrayList<Integer>> adj,
+        boolean[] visited, ArrayList<Integer> dfsPath) {
+        visited[u] = true;
+        dfsPath.add(u);
+        for (Integer v : adj.get(u)) {
+            if (!visited[v]) {
+                dfsGraph(v, adj, visited, dfsPath);
             }
         }
     }
 }
+
