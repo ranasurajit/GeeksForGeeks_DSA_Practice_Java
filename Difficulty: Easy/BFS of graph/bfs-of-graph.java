@@ -34,23 +34,30 @@ class GFG {
 
 
 class Solution {
-    // Function to return Breadth First Traversal of given graph.
-    public ArrayList<Integer> bfsOfGraph(int V, ArrayList<ArrayList<Integer>> adj) {
-        ArrayList<Integer> path = new ArrayList<Integer>();
-        boolean[] visited = new boolean[V];
-        Queue<Integer> queue = new LinkedList<Integer>();
+    // Function to return Breadth First Search Traversal of given graph.
+    /**
+     * Approach : Using BFS Traversal Approach
+     * 
+     * TC: O(V + 2 x E) ~ O(V + E)
+     * SC: O(2 x V) ~ O(V)
+     */
+    public ArrayList<Integer> bfs(ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<Integer> bfsPath = new ArrayList<Integer>();
+        int n = adj.size();
+        boolean[] visited = new boolean[n]; // SC: O(V)
+        Queue<Integer> queue = new LinkedList<Integer>(); // SC: O(V)
         queue.offer(0);
         visited[0] = true;
         while (!queue.isEmpty()) {
             Integer u = queue.poll();
-            path.add(u);
+            bfsPath.add(u);
             for (Integer v : adj.get(u)) {
                 if (!visited[v]) {
-                    queue.offer(v);
                     visited[v] = true;
+                    queue.offer(v);
                 }
             }
         }
-        return path;
+        return bfsPath;
     }
 }
