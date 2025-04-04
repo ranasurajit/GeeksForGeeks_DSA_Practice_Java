@@ -1,35 +1,51 @@
-int[][] directions = { 
-    {-1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, 
-    { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }
-};
+class Solution {
+    
+    private static final int[][] directions = {
+        { -1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 },
+        { 1, 0 }, { 1, -1 }, { 0, -1 }, { -1, -1 }
+    };
 
-/**
- * TC: O(N x M)
- * SC: O(N x M) -  Recursion Stack space
- * DFS take TC: O(N x M) as it visits all the grid cells
- */
-public int numIslands(char[][] grid) {
-    int n = grid.length;
-    int m = grid[0].length;
-    int countIslands = 0;
-    for (int i = 0; i < n; i++) { // TC: O(N)
-        for (int j = 0; j < m; j++) { // TC: O(M)
-            if (grid[i][j] == '1') {
-                dfsGraph(i, j, n, m, grid);
-                countIslands++;
+    /**
+     * Approach : Using DFS Approach
+     * 
+     * TC: O(K x N x M) ~ O(N x M)
+     * SC: O(K x N x M) ~ O(N x M)
+     * 
+     * where K = cells marked as 'L' which in worst case = N x M
+     */
+    public int countIslands(char[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        boolean[][] visited = new boolean[n][m]; // SC: O(N x M)
+        int islands = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            for (int j = 0; j < m; j++) { // TC: O(M)
+                if (!visited[i][j] && grid[i][j] == 'L') {
+                    dfsGraph(i, j, grid, visited, n, m); // TC: O(K), SC: O(K)
+                    islands++;
+                }
             }
         }
+        return islands;
     }
-    return countIslands;
-}
-
-private void dfsGraph(int i, int j, int rows, int cols, char[][] grid) {
-    if (i < 0 || j < 0 || i >= rows || j >= cols || grid[i][j] == '0') {
-        return;
-    }
-    grid[i][j] = '0';
-    // move in all 8 directions
-    for (int[] dir : directions) {
-        dfsGraph(i + dir[0], j + dir[1], rows, cols, grid);
+    
+    /**
+     * Using DFS Approach
+     * 
+     * TC: O(K)
+     * SC: O(K)
+     * 
+     * where K = cells marked as 'L' which in worst case = N x M
+     */
+    private void dfsGraph(int row, int col, char[][] grid, boolean[][] visited, int n, int m) {
+        // validate cells
+        if (row < 0 || row >= n || col < 0 || col >= m || visited[row][col] || 
+            grid[row][col] == 'W') {
+            return;        
+        }
+        visited[row][col] = true;
+        for (int[] direction : directions) {
+            dfsGraph(row + direction[0], col + direction[1], grid, visited, n, m);
+        }
     }
 }
