@@ -32,24 +32,74 @@ class DriverClass {
 /*Complete the function below*/
 
 class Solution {
-    // Function to detect cycle in a directed graph.
-    public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
-        boolean[] visited = new boolean[V];
-        boolean[] inRecursion = new boolean[V];
-        for (int i = 0; i < V; i++) {
-            if (!visited[i] && graphHasCycleDFS(adj, i, visited, inRecursion)) {
-                return true;
+    /**
+     * Approach II : Using BFS Approach (Kahn's Algorithm's Topological Sort Approach)
+     * 
+     * TC: O(2 x V + 2 x E) ~ O(V + E)
+     * SC: O(3 x V + E) ~ O(V + E)
+     */
+    public boolean isCyclic(int V, int[][] edges) {
+        Map<Integer, ArrayList<Integer>> adj =
+            new HashMap<Integer, ArrayList<Integer>>(); // SC: O(V + E)
+        int[] indegrees = new int[V]; // SC: O(V)
+        for (int[] edge : edges) { // TC: O(E)
+            adj.computeIfAbsent(edge[0], k -> new ArrayList<Integer>()).add(edge[1]);
+            indegrees[edge[1]]++;
+        }
+        Queue<Integer> queue = new LinkedList<Integer>(); // SC: O(V)
+        for (int i = 0; i < V; i++) { // TC: O(V)
+            if (indegrees[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        int countVertices = 0;
+        while (!queue.isEmpty()) { // TC: O(V + E)
+            int u = queue.poll();
+            countVertices++;
+            for (Integer v : adj.getOrDefault(u, new ArrayList<Integer>())) {
+                indegrees[v]--;
+                if (indegrees[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+        return countVertices != V;
+    }
+
+    /**
+     * Approach I : Using DFS Approach
+     * 
+     * TC: O(2 x V + 2 x E) ~ O(V + E)
+     * SC: O(4 x V + E) ~ O(V + E)
+     */
+    public boolean isCyclicDFS(int V, int[][] edges) {
+        Map<Integer, ArrayList<Integer>> adj =
+            new HashMap<Integer, ArrayList<Integer>>(); // SC: O(V + E)
+        for (int[] edge : edges) { // TC: O(E)
+            adj.computeIfAbsent(edge[0], k -> new ArrayList<Integer>()).add(edge[1]);
+        }
+        boolean[] visited = new boolean[V];     // SC: O(V)
+        boolean[] inRecursion = new boolean[V]; // SC: O(V)
+        for (int i = 0; i < V; i++) { // TC: O(V)
+            if (!visited[i] && dfsGraph(i, adj, visited, inRecursion)) { // TC: O(V + E), SC: O(V)
+                return true;   
             }
         }
         return false;
     }
     
-    private boolean graphHasCycleDFS(ArrayList<ArrayList<Integer>> adj, int u,
+    /**
+     * Using DFS Approach
+     * 
+     * TC: O(V + E)
+     * SC: O(V)
+     */
+    private boolean dfsGraph(int u, Map<Integer, ArrayList<Integer>> adj,
         boolean[] visited, boolean[] inRecursion) {
         visited[u] = true;
         inRecursion[u] = true;
-        for (Integer v : adj.get(u)) {
-            if (!visited[v] && graphHasCycleDFS(adj, v, visited, inRecursion)) {
+        for (Integer v : adj.getOrDefault(u, new ArrayList<Integer>())) {
+            if (!visited[v] && dfsGraph(v, adj, visited, inRecursion)) {
                 return true;
             } else if (inRecursion[v]) {
                 return true;
