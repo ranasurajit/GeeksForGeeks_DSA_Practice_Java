@@ -36,6 +36,8 @@ class Solution {
      * 
      * TC: O(V + E)
      * SC: O(V + E)
+     * 
+     * Accepted: (1111/1111 Passed)
      */
     static ArrayList<Integer> articulationPoints(int V, int[][] edges) {
         List<List<Integer>> adj = new ArrayList<>();
@@ -94,6 +96,8 @@ class Solution {
      * 
      * TC: O(V + 2 x E + V x (V + 2 x E)) ~ O(V x (V + E))
      * SC: O(V x (2 x V + E) + 2 x V + E) ~ O(V x (V + E))
+     * 
+     * Time Limit Exceeded (1110/1111 Passed)
      */
     static ArrayList<Integer> articulationPointsBruteForce(int V, int[][] edges) {
         Map<Integer, ArrayList<Integer>> adj = createGraph(edges, -1); // TC: O(E), SC: O(V + E)
