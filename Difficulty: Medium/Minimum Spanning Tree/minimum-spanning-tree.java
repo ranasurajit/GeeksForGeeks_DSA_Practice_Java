@@ -40,35 +40,39 @@ public class Main {
 
 class Solution {
     /**
-     * Using Prim's Algorithm
+     * Approach : Prim's Algorithm Approach
      * 
-     * TC: O(2 x E x log(E)) ~ O(E x log(E))
-     * SC: O(V + E)
+     * TC: O(2 x E x log(V)) ~ O(E x log(V))
+     * SC: O(2 x V + E) ~ O(V + E)
      */
     static int spanningTree(int V, int E, List<List<int[]>> adj) {
-        boolean[] visited = new boolean[V];   // SC: O(V)
-        // Min-heap to store (weight, node) - // SC: O(E)
-        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p, q) -> p[0] - q[0]);
-        // pick any vertex and add it to Min-Heap
-        pq.offer(new int[] { 0, 0 });
-        int sum = 0;
+        boolean[] visited = new boolean[V]; // SC: O(V)
+        int[] parent = new int[V]; // SC: O(V)
+        Arrays.fill(parent, -1);
+        // we will be storing int[] { weight, node, parent } in Min-Heap
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p, q) -> p[0] - q[0]); // SC: O(E)
+        pq.offer(new int[] { 0, 0, -1 }); // TC: O(log(V))
+        int sumWeights = 0;
         while (!pq.isEmpty()) { // TC: O(E)
-            int[] current = pq.poll(); // TC: O(log(E))
-            int weight = current[0];
+            int[] current = pq.poll();
+            int w = current[0];
             int u = current[1];
+            int par = current[2];
             if (visited[u]) {
                 continue;
             }
             visited[u] = true;
-            sum += weight;
-            for (int[] ngbr : adj.get(u)) {
+            parent[u] = par;
+            sumWeights += w;
+            for (int[] ngbr : adj.get(u)) { // TC: O(E)
                 int v = ngbr[0];
                 int edgeWeight = ngbr[1];
                 if (!visited[v]) {
-                    pq.offer(new int[] { edgeWeight, v }); // TC: O(log(E))
+                    pq.offer(new int[] { edgeWeight, v, u }); // TC: O(log(V))
                 }
             }
         }
-        return sum;
+        return sumWeights;
     }
 }
+
