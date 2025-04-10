@@ -25,17 +25,102 @@ class GFG {
 
 // } Driver Code Ends
 
-
-
-
 class Solution {
     /**
-     * Approach: Using Prim's Algorithm Approach
+     * Approach II : Using Kruskal's Algorithm and Disjoint Set Union Approach
+     * 
+     * TC: O(V + E x log(E) + 3 x E x α(V)) ~ O(E x log(E) + E x α(V)) ~ O(E x log(E))
+     * SC: O(2 x V ^ 2 + 2 x V) ~ O(V ^ 2)
+     */
+    public int minCost(int[][] houses) {
+        int n = houses.length;
+        int[] parent = new int[n]; // SC: O(V)
+        int[] rank = new int[n]; // SC: O(V)
+        for (int i = 0; i < n; i++) { // TC: O(V)
+            parent[i] = i;
+        }
+        Arrays.fill(rank, 1);
+        // creating the edges
+        List<int[]> edges = createEdges(n, houses); // TC: O(V ^ 2), SC: O(V ^ 2)
+        // Sort edges in ascending order of edge weights
+        edges.sort(Comparator.comparingInt(a -> a[2])); // TC: O(E x log(E))
+        // iterating over sorted edges and calculate sum
+        int minimumCost = 0;
+        for (int[] edge : edges) { // TC: O(E)
+            if (find(edge[0], parent) != find(edge[1], parent)) { // TC: O(2 x α(V))
+                unionByRank(edge[0], edge[1], parent, rank); // TC: O(α(V))
+                minimumCost += edge[2];
+            }
+        }
+        return minimumCost;
+    }
+    
+    /**
+     * Using DSU Approach - Find by Path Compression
+     * 
+     * TC: O(α(V))
+     * SC: O(V)
+     */
+    private int find(int x, int[] parent) {
+        if (x == parent[x]) {
+            return x;
+        }
+        return parent[x] = find(parent[x], parent);
+    }
+    
+    /**
+     * Using DSU Approach - Union By Rank
+     * 
+     * TC: O(2 x α(V)) ~ O(α(V))
+     * SC: O(V)
+     */
+    private void unionByRank(int x, int y, int[] parent, int[] rank) {
+        int xParent = find(x, parent); // TC: O(α(V)), SC: O(V)
+        int yParent = find(y, parent); // TC: O(α(V)), SC: O(V)
+        if (xParent == yParent) {
+            return;
+        }
+        if (rank[xParent] > rank[yParent]) {
+            // make x as parent of y
+            parent[yParent] = xParent;
+        } else if (rank[xParent] < rank[yParent]) {
+            // make y as parent of x
+            parent[xParent] = yParent;
+        } else {
+            // make x as parent of y
+            parent[yParent] = xParent;
+            rank[x]++;
+        }
+    }
+
+    /**
+     * Creating Edges from the coordinates
+     * 
+     * TC: O(V ^ 2)
+     * SC: O(V ^ 2)
+     */
+    private List<int[]> createEdges(int v, int[][] houses) {
+        List<int[]> edges = new ArrayList<int[]>();
+        for (int i = 0; i < v; i++) {
+            for (int j = i + 1; j < v; j++) {
+                int x1 = houses[i][0];
+                int y1 = houses[i][1];
+                int x2 = houses[j][0];
+                int y2 = houses[j][1];
+                int weight = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+                edges.add(new int[] { i, j, weight });
+            }
+        }
+        return edges;
+    }
+    
+    /**
+     * Approach I : Using Prim's Algorithm Approach
      * 
      * TC: O(V ^ 2 x log(V))
      * SC: O(2 x V ^ 2 + V) ~ O(V ^ 2)
      */
-    public int minCost(int[][] houses) {
+    public int minCostPrimsAlgoApproach(int[][] houses) {
         int n = houses.length;
         // create adjacency list
         Map<Integer, ArrayList<int[]>> adj = createGraph(n, houses); // TC: O(V ^ 2), SC: O(V ^ 2)
