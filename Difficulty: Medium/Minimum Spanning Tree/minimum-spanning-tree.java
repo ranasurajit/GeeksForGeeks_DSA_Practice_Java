@@ -40,12 +40,80 @@ public class Main {
 
 class Solution {
     /**
-     * Approach : Prim's Algorithm Approach
+     * Approach II : Kruskal's Algorithm Approach
+     * 
+     * TC: O(E + V + E + E x log(E) + 3 x E x α(V)) ~ O(E x log(E) + E x α(V))
+     * SC: O(2 x V + E) ~ O(V + E)
+     */
+    static int spanningTree(int V, int E, List<List<int[]>> adj) {
+        int[] parent = new int[V]; // SC: O(V)
+        int[] rank = new int[V]; // SC: O(V)
+        List<int[]> edges = new ArrayList<int[]>(); // SC: O(E)
+        for (int i = 0; i < V; i++) { // TC: O(V)
+            for (int[] ngbr : adj.get(i)) { // TC: O(E)
+                edges.add(new int[] { i, ngbr[0], ngbr[1] });
+            }
+            parent[i] = i;
+            rank[i] = 1;
+        }
+        // Sorting edges in ascending order of edgeWeights
+        edges.sort(Comparator.comparingInt(a -> a[2])); // TC: O(E x log(E))
+        // iterating over edges
+        int sumWeights = 0;
+        for (int[] edge : edges) { // TC: O(E)
+            if (find(edge[0], parent) != find(edge[1], parent)) { // TC: O(2 x α(V))
+                unionByRank(edge[0], edge[1], parent, rank); // TC: O(α(V))
+                sumWeights += edge[2];
+            }
+        }
+        return sumWeights;
+    }
+    
+    /**
+     * Using DSU Approach - Find by Path Compression
+     * 
+     * TC: O(α(V))
+     * SC: O(V)
+     */
+    private static int find(int x, int[] parent) {
+        if (x == parent[x]) {
+            return x;
+        }
+        return parent[x] = find(parent[x], parent);
+    }
+    
+    /**
+     * Using DSU Approach - Union By Rank
+     * 
+     * TC: O(2 x α(V)) ~ O(α(V))
+     * SC: O(V)
+     */
+    private static void unionByRank(int x, int y, int[] parent, int[] rank) {
+        int xParent = find(x, parent); // TC: O(α(V)), SC: O(V)
+        int yParent = find(y, parent); // TC: O(α(V)), SC: O(V)
+        if (xParent == yParent) {
+            return;
+        }
+        if (rank[xParent] > rank[yParent]) {
+            // make x parent of y
+            parent[yParent] = xParent;
+        } else if (rank[xParent] < rank[yParent]) {
+            // make y parent of x
+            parent[xParent] = yParent;
+        } else {
+            // make x parent of y
+            parent[yParent] = xParent;
+            rank[x]++;
+        }
+    }
+
+    /**
+     * Approach I : Prim's Algorithm Approach
      * 
      * TC: O(2 x E x log(V)) ~ O(E x log(V))
      * SC: O(2 x V + E) ~ O(V + E)
      */
-    static int spanningTree(int V, int E, List<List<int[]>> adj) {
+    static int spanningTreePrimsAlgoApproach(int V, int E, List<List<int[]>> adj) {
         boolean[] visited = new boolean[V]; // SC: O(V)
         int[] parent = new int[V]; // SC: O(V)
         Arrays.fill(parent, -1);
@@ -75,4 +143,3 @@ class Solution {
         return sumWeights;
     }
 }
-
