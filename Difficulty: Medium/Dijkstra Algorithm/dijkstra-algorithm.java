@@ -55,47 +55,55 @@ class DriverClass
 //User function Template for Java
 
 
-class Solution
-{
-    // Function to find the shortest distance of all the vertices
-    // from the source vertex src.
+class Solution {
     /**
-     * Dijkstra Algorithm Approach
+     * Approach: Using Dijkstra Algorithm
      * 
-     * TC: O((V + E) x log(V) + V) ~ O((V + E) x log(V))
-     * SC: O(2 x V) ~ O(V)
-     * 
-     * @param adj
-     * @param src
-     * @return
+     * TC: O(E + log(V) + 2 x E x log(V)) ~ O(E x log(V))
+     * SC: O(2 x V + 2 x E) ~ O(V + E)
      */
-    ArrayList<Integer> dijkstra(ArrayList<ArrayList<iPair>> adj, int src) {
-        ArrayList<Integer> minDistList = new ArrayList<Integer>();
-        int n = adj.size();
-        int[] minDist = new int[n]; // SC: O(V)
-        Arrays.fill(minDist, Integer.MAX_VALUE);
-        // distance from src to src is 0
+    public int[] dijkstra(int V, int[][] edges, int src) {
+        Map<Integer, ArrayList<int[]>> adj = createGraph(edges); // TC: O(E), SC: O(V + E)
+        // Create a Min-Heap to store { weight, node }
+        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p, q) -> p[0] - q[0]); // SC: O(E)
+        int[] minDist = new int[V]; // SC: O(V)
+        Arrays.fill(minDist, (int) 1e9);
         minDist[src] = 0;
-        // Create a PriorityQueue (min-heap) in order of distance
-        // SC: O(V)
-        PriorityQueue<int[]> pq = new PriorityQueue<int[]>((p, q) -> p[0] - q[0]);
-        pq.offer(new int[] { 0, src }); // TC: O(log(1))
-        while (!pq.isEmpty()) { // TC: O(V)
-            int[] current = pq.poll();
+        pq.offer(new int[] { 0, src }); // TC: O(log(V)) - distance from origin to origin = 0
+        while (!pq.isEmpty()) { // TC: O(E)
+            int[] current = pq.poll(); // TC: O(log(V))
             int weight = current[0];
             int u = current[1];
-            for (iPair neighbour : adj.get(u)) { // TC: O(E)
-                int v = neighbour.first;
-                int edgeWeight = neighbour.second;
-                if (weight + edgeWeight < minDist[v]) {
-                    minDist[v] = weight + edgeWeight;
-                    pq.offer(new int[] { weight + edgeWeight, v }); // TC: O(log(V))
+            if (weight > minDist[u]) {
+                continue;
+            }
+            for (int[] ngbr : adj.getOrDefault(u, new ArrayList<int[]>())) {
+                int v = ngbr[0];
+                int edgeWeight = ngbr[1];
+                if (edgeWeight + weight < minDist[v]) {
+                    minDist[v] = edgeWeight + weight;
+                    pq.offer(new int[] { edgeWeight + weight, v }); // TC: O(log(V))
                 }
             }
         }
-        for (int item : minDist) { // TC: O(V)
-            minDistList.add(item);
+        return minDist;
+    }
+    
+    /**
+     * Creating Adjacency List
+     * 
+     * TC: O(2 x E) ~ O(E)
+     * SC: O(V + E)
+     */
+    private Map<Integer, ArrayList<int[]>> createGraph(int[][] edges) {
+        Map<Integer, ArrayList<int[]>> adj =
+            new HashMap<Integer, ArrayList<int[]>>();
+        for (int[] edge : edges) {
+            adj.computeIfAbsent(edge[0], k -> new ArrayList<int[]>())
+                .add(new int[] { edge[1], edge[2] });
+            adj.computeIfAbsent(edge[1], k -> new ArrayList<int[]>())
+                .add(new int[] { edge[0], edge[2] });
         }
-        return minDistList;
+        return adj;
     }
 }
