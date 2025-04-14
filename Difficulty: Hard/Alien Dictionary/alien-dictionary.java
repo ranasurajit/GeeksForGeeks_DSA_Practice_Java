@@ -86,56 +86,96 @@ class GFG {
 
 //User function Template for Java
 
-class Solution
-{
-    public String findOrder(String[] dict, int N, int K) {
-        HashMap<Integer, ArrayList<Integer>> adj = createGraph(dict, N, K);
-        String order = topoSort(adj, N, K);
-        return order;
-    }
-    
-    private String topoSort(HashMap<Integer, ArrayList<Integer>> adj, int n, int k) {
-        StringBuilder sb = new StringBuilder();
-        int[] indegrees = new int[k];
-        for (int i = 0; i < k; i++) {
-            for (Integer it : adj.get(i)) {
-                indegrees[it]++;
+class Solution {
+    /**
+     * Approach : Performing Topological Sort and Cycle Detection Using DFS Approach
+     * 
+     * TC: O(2 x N x L + (2 x V + E)) ~ O(N x L + V + E))
+     * SC: O(3 x V + E) ~ O(V + E)
+     */
+    public String findOrder(String[] words) {
+        int n = words.length;
+        boolean[] exist = new boolean[26]; // SC:O(26)
+        for (String word : words) { // TC: O(N)
+            for (char ch : word.toCharArray()) { // TC: O(L)
+                exist[ch - 'a'] = true;
             }
         }
-        Queue<Integer> queue = new LinkedList<Integer>();
-        for (int i = 0; i < k; i++) {
-            if (indegrees[i] == 0) {
-                queue.offer(i);
-            }
-        }
-        while (!queue.isEmpty()) {
-            Integer u = queue.poll();
-            char ch = (char) (u + 'a');
-            sb.append(ch);
-            for (Integer v : adj.get(u)) {
-                indegrees[v]--;
-                if (indegrees[v] == 0) {
-                    queue.offer(v);
-                }
-            }
-        }
-        return sb.length() == k ? sb.toString() : "";
-    }
-    
-    private HashMap<Integer, ArrayList<Integer>> createGraph(String[] dict, int n, int k) {
-        HashMap<Integer, ArrayList<Integer>> adj = new HashMap<Integer, ArrayList<Integer>>();
-        for (int i = 0; i < k; i++) {
-            adj.put(i, new ArrayList<Integer>());
-        }
-        for (int i = 0; i < n - 1; i++) {
-            int m = Math.min(dict[i].length(), dict[i + 1].length());
-            for (int j = 0; j < m; j++) {
-                if (dict[i].charAt(j) != dict[i + 1].charAt(j)) {
-                    adj.get(dict[i].charAt(j) - 'a').add(dict[i + 1].charAt(j) - 'a');
+        Map<Integer, ArrayList<Integer>> adj = 
+            new HashMap<Integer, ArrayList<Integer>>(); // SC: O(V + E)
+        for (int i = 1; i < n; i++) { // TC: O(N)
+            String prev = words[i - 1];
+            String current = words[i];
+            int len = Math.min(prev.length(), current.length());
+            boolean found = false;
+            for (int j = 0; j < len; j++) { // TC: O(L)
+                if (prev.charAt(j) != current.charAt(j)) {
+                    found = true;
+                    if (!adj.containsKey(prev.charAt(j) - 'a')) {
+                        adj.put(prev.charAt(j) - 'a', new ArrayList<Integer>());
+                    }
+                    if (!adj.containsKey(current.charAt(j) - 'a')) {
+                        adj.put(current.charAt(j) - 'a', new ArrayList<Integer>());
+                    }
+                    adj.get(prev.charAt(j) - 'a').add(current.charAt(j) - 'a');
                     break;
                 }
             }
+            if (!found && current.length() < prev.length()) { // handle prefix case
+                return "";
+            }
         }
-        return adj;
+        // we need to perform topological sort along with cycle detection
+        Stack<Integer> st = new Stack<Integer>(); // SC: O(V)
+        if (topologicalSort(adj, st, exist)) { // TC: O(V + E), SC: O(V)
+            // graph has cycle
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!st.isEmpty()) { // TC: O(V)
+            sb.append((char) ((int) 'a' + st.pop()));
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Performing Topological Sort and Cycle Detection Using DFS Approach
+     * 
+     * TC: O(V + E)
+     * SC: O(V)
+     */
+    private boolean topologicalSort(Map<Integer, ArrayList<Integer>> adj, 
+        Stack<Integer> st, boolean[] exist) {
+        boolean[] visited = new boolean[26]; // SC: O(26)
+        boolean[] inRecursion = new boolean[26]; // SC: O(26)
+        for (int u = 0; u < 26; u++) { // TC: O(26)
+            if (exist[u] && !visited[u] && 
+                dfsGraphHasCycle(u, adj, visited, inRecursion, st)) { // TC: O(V + E), SC: O(V)
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Using DFS Approach
+     * 
+     * TC: O(V + E)
+     * SC: O(V)
+     */
+    private boolean dfsGraphHasCycle(int u, Map<Integer, ArrayList<Integer>> adj,
+        boolean[] visited, boolean[] inRecursion, Stack<Integer> st) {
+        visited[u] = true;
+        inRecursion[u] = true;
+        for (Integer v : adj.getOrDefault(u, new ArrayList<Integer>())) {
+            if (!visited[v] && dfsGraphHasCycle(v, adj, visited, inRecursion, st)) {
+                return true;
+            } else if (inRecursion[v]) {
+                return true;
+            }
+        }
+        st.push(u);
+        inRecursion[u] = false;
+        return false;
     }
 }
