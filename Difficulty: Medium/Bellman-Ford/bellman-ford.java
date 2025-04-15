@@ -55,47 +55,32 @@ class DriverClass {
  */
 class Solution {
     /**
-     * Using Bellman-Ford Algorithm
+     * Approach : Bellman-Ford Algorithm
      * 
-     * TC: O(V x E + V + E) ~ O(V x E)
-     * SC: O(1)
-     * 
-     * @param V
-     * @param edges
-     * @param src
-     * @return
+     * TC: O((V x E) + E) ~ O(V x E)
+     * SC: O(V)
      */
-    static int[] bellmanFord(int V, int[][] edges, int src) {
-        int[] minDist = new int[V];
-        Arrays.fill(minDist, (int) 1e8);    // TC: O(V)
+    public int[] bellmanFord(int V, int[][] edges, int src) {
+        int[] minDist = new int[V]; // SC: O(V)
+        Arrays.fill(minDist, (int) 1e8);
         minDist[src] = 0;
-        
-        /**
-         * relaxing the edges V - 1 times as per Bellman-Ford Algorithm
-         * to get the shortest distance from source node/vertex to all 
-         * other nodes/verices
-         */
-        for (int i = 0; i <= V - 1; i++) { // TC: O(V)
-            for (int[] edge : edges) {     // TC: O(E)
+        // relaxing the edges (V - 1) times
+        for (int i = 1; i <= V - 1; i++) { // TC: O(V)
+            for (int[] edge : edges) { // TC: O(E)
                 int u = edge[0];
                 int v = edge[1];
                 int w = edge[2];
-                if (minDist[u] != (int) 1e8 && minDist[u] + w < minDist[v]) {
-                    minDist[v] = minDist[u] + w;
+                if (minDist[u] != (int) 1e8 && w + minDist[u] < minDist[v]) {
+                    minDist[v] = w + minDist[u];
                 }
             }
         }
-        /**
-         * Bellman-Ford Algorithm helps to detect negative cycles as well
-         * so let's relax the edges once-more to see if distance further
-         * gets reduced then if so, then it indicates negative cycle in the
-         * graph so would return { -1 } as per ask
-         */
-        for (int[] edge : edges) {        // TC: O(E)
+        // relaxing the edge once more to detect 'negative weight cycle'
+        for (int[] edge : edges) { // TC: O(E)
             int u = edge[0];
             int v = edge[1];
             int w = edge[2];
-            if (minDist[u] != (int) 1e8 && minDist[u] + w < minDist[v]) {
+            if (minDist[u] != (int) 1e8 && w + minDist[u] < minDist[v]) {
                 return new int[] { -1 };
             }
         }
