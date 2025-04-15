@@ -37,41 +37,21 @@ class GFG {
 
 class Solution {
     /**
-     * Using Floyd Warshall Algorithm
+     * Approach : Floyd Warshall Algorithm
      * 
-     * TC: O(N ^ 3 + 2 x N ^ 2) ~ O(N ^ 3)
+     * TC: O(N ^ 3)
      * SC: O(1)
-     * 
-     * @param mat
      */
-    public void shortestDistance(int[][] mat) {
-        int n = mat.length; // n x n matrix
-        /**
-         * adding bigger value than one mentioned in constraints 
-         * against (i, j) which has no edge
-         */
-        for (int i = 0; i < n; i++) {         // TC: O(N)
-            for (int j = 0; j < n; j++) {     // TC: O(N)
-                if (mat[i][j] == -1) {
-                    mat[i][j] = 1001;         // as -1 <= mat[i][j] <= 1000
-                }
-            }
-        }
-        // calculating shortest path by Floyd Warshall Algorithm
+    public void floydWarshall(int[][] dist) {
+        int n = dist.length;
+        // we need to calculate shortest distance from node1 to node 2 via all other nodes
         for (int via = 0; via < n; via++) {   // TC: O(N)
             for (int i = 0; i < n; i++) {     // TC: O(N)
                 for (int j = 0; j < n; j++) { // TC: O(N)
-                    mat[i][j] = Math.min(mat[i][j], mat[i][via] + mat[via][j]);
+                    dist[i][j] = Math.min(dist[i][j], dist[i][via] + dist[via][j]);
                 }
             }
         }
-        // reverting back the values for (i, j) which has no edge
-        for (int i = 0; i < n; i++) {         // TC: O(N)
-            for (int j = 0; j < n; j++) {     // TC: O(N)
-                if (mat[i][j] == 1001) {
-                    mat[i][j] = -1;
-                }
-            }
-        }
+        // no need to check negative weight cycles
     }
 }
