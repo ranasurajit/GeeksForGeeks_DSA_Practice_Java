@@ -55,7 +55,7 @@ class Solution {
             int v = edge[1];
             int w = edge[2];
             
-            int shortestWeight = dijkstra(u, v, V, adj, u, v); // TC: O((V + E) x log(V)), SC: O(V)
+            int shortestWeight = dijkstra(u, v, V, adj); // TC: O((V + E) x log(V)), SC: O(V)
             
             // adding the removed egde weight to 'shortestWeight'
             if (shortestWeight != Integer.MAX_VALUE) {
@@ -71,8 +71,7 @@ class Solution {
      * TC: O((V + E) x log(V))
      * SC: O(2 x V) ~ O(V)
      */
-    private int dijkstra(int src, int dest, int n, Map<Integer, ArrayList<int[]>> adj,
-        int skipA, int skipB) {
+    private int dijkstra(int src, int dest, int n, Map<Integer, ArrayList<int[]>> adj) {
         int[] minDist = new int[n]; // SC: O(V)
         Arrays.fill(minDist, Integer.MAX_VALUE);
         minDist[src] = 0;
@@ -89,7 +88,7 @@ class Solution {
             for (int[] ngbr : adj.getOrDefault(u, new ArrayList<int[]>())) {
                 int v = ngbr[0];
                 int edgeWeight = ngbr[1];
-                if ((u == skipA && v == skipB) || (v == skipA && u == skipB)) {
+                if ((u == src && v == dest) || (v == src && u == dest)) {
                     // temporarily remove edge
                     continue;
                 }
