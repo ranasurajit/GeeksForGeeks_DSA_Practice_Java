@@ -27,15 +27,22 @@ class GFG {
 
 // User function Template for Java
 class Solution {
-    // Note that the size of the array is n-1
-    int missingNumber(int n, int arr[]) {
-        int xor = 0;
-        for (int i = 1; i <= n; i++) {
-            xor = xor ^ i;
-            if (i - 1 < arr.length) {
-                xor = xor ^ arr[i - 1];
-            }
+    /**
+     * Approach : Using Bit-Manipulation Approach
+     * 
+     * TC: O(N)
+     * SC: O(1)
+     */
+    int missingNum(int arr[]) {
+        int n = arr.length;
+        int xorMissing = 0;
+        int xorAll = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            xorMissing ^= arr[i];
+            xorAll ^= (i + 1);
         }
-        return xor;
+        xorAll ^= (n + 1);
+        return xorMissing ^ xorAll;
     }
 }
+
