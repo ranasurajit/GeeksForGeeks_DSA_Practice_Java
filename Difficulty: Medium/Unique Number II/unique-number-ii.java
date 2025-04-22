@@ -9,12 +9,40 @@ import java.util.HashMap;
 
 class Solution {
     /**
+     * Approach II : Using Bit-Manipulation Approach
+     * 
+     * TC: O(2 x N) ~ O(N)
+     * SC: O(1)
+     */
+    public int[] singleNum(int[] arr) {
+        int xor = 0;
+        for (int item : arr) { // TC: O(N)
+            xor ^= item;
+        }
+        // calculate right most set bit of xor
+        int rightMostSetBit = xor & -xor;
+        int a = 0;
+        int b = 0;
+        int[] distinctNums = new int[2];
+        for (int item : arr) { // TC: O(N)
+            if ((rightMostSetBit & item) == 0) {
+                a ^= item;
+            } else {
+                b ^= item;
+            }
+        }
+        distinctNums[0] = a < b ? a : b;
+        distinctNums[1] = a < b ? b : a;
+        return distinctNums;
+    }
+
+    /**
      * Approach I : Using Hashing Approach
      * 
      * TC: O(2 x N) ~ O(N)
      * SC: O(N)
      */
-    public int[] singleNum(int[] arr) {
+    public int[] singleNumApproachI(int[] arr) {
         int x = 0;
         int y = 0;
         Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // SC: O(N)
@@ -33,7 +61,6 @@ class Solution {
         return x < y ? new int[] { x, y } : new int[] { y, x };
     }
 }
-
 
 //{ Driver Code Starts.
 public class Main {
