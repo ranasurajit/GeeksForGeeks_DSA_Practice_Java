@@ -25,12 +25,43 @@ class Geeks {
 
 class Solution {
     /**
+     * Approach II : Using Moore's Voting Approach
+     * 
+     * TC: O(2 x N) ~ O(N)
+     * SC: O(1)
+     */
+    static int majorityElement(int arr[]) {
+        int n = arr.length;
+        int current = arr[0];
+        int count = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (current != arr[i]) {
+                count--;
+                if (count == 0) {
+                    current = arr[i];
+                    count = 1;
+                }
+            } else {
+                count++;
+            }
+        }
+        // double check to verify if current occurs > n / 2
+        count = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (arr[i] == current) {
+                count++;
+            }
+        }
+        return count > n / 2 ? current : -1;
+    }
+
+    /**
      * Approach I : Using Hashing Approach
      * 
      * TC: O(2 x N) ~ O(N)
      * SC: O(N)
      */
-    static int majorityElement(int arr[]) {
+    static int majorityElementApproachI(int arr[]) {
         int n = arr.length;
         HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(); // SC: O(N)
         for (int i = 0; i < n; i++) { // TC: O(N)
