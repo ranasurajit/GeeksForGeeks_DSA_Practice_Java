@@ -34,37 +34,11 @@ class Solution {
      * SC: O(1)
      */
     public int getSingle(int[] arr) {
-        // int n = arr.length;
-        // /**
-        //  * count stores the sum of all bits of numbers in array
-        //  * from rightmost bit to leftmost bit
-        //  * i.e. count is storing binary bits in reverse order
-        //  */
-        // int[] count = new int[32]; // SC: O(32) ~ O(1)
-        // for (int item : arr) { // TC: O(N)
-        //     int j = 0;
-        //     while (item > 0) { // TC: O(1)
-        //         int lastBit = (item & 1);
-        //         count[j] += lastBit;
-        //         j++;
-        //         item = item >> 1;
-        //     }
-        // }
-        // int unique = 0;
-        // int pow = 1;
-        // for (int i = 0; i < 32; i++) { // TC: O(32) ~ O(1)
-        //     count[i] = count[i] % 3; // removes contribution from 3 times of duplicates
-        //     unique += count[i] * pow;
-        //     pow = pow << 1;
-        // }
-        // return unique;
         int ones = 0, twos = 0;
-
-        for (int num : arr) {
+        for (int num : arr) { // TC: O(N)
             ones = (ones ^ num) & ~twos;
             twos = (twos ^ num) & ~ones;
         }
-
         return ones;
     }
 
