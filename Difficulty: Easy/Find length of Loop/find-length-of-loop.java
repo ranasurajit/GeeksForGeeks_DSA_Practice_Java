@@ -69,16 +69,23 @@ class Node
 
 */
 
-// Function should return the length of the loop in LL.
-
 class Solution {
     // Function to find the length of a loop in the linked list.
+    /**
+     * Approach : Using Floyd's Fast and Slow Pointers Approach
+     * 
+     * TC: O(3 x N) ~ O(N)
+     * SC: O(1)
+     */
     public int countNodesinLoop(Node head) {
+        if (head == null) {
+            // the linkedlist has no loop
+            return 0;
+        }
         Node slow = head;
         Node fast = head;
-        // increase slow pointer by 1 step
-        // increase fast pointer by 2 steps
-        while (fast != null && fast.next != null) {
+        // move slow pointer by 1 step and fast pointer by 2 steps
+        while (fast != null && fast.next != null) { // TC: O(N)
             slow = slow.next;
             fast = fast.next.next;
             if (slow == fast) {
@@ -86,17 +93,28 @@ class Solution {
             }
         }
         if (fast == null || fast.next == null) {
+            // the linkedlist has no loop
             return 0;
         }
-        int count = 0;
-        // increase slow pointer by 1 step
-        while (slow != null) {
+        /**
+         * at this point slow and fast points to same node
+         * 
+         * now move slow pointer back to head
+         * move both slow and fast pointers by 1 step to find
+         * the start point of the loop
+         */
+        slow = head;
+        while (slow != fast) { // TC: O(N)
             slow = slow.next;
-            count++;
-            if (slow == fast) {
-                break;
-            }
+            fast = fast.next;
         }
-        return count;
+        int length = 1;
+        // now move only fast pointer by 1 step till it meets slow pointer at start of loop
+        fast = fast.next;
+        while (slow != fast) { // TC: O(N)
+            length++;
+            fast = fast.next;
+        }
+        return length;
     }
 }
