@@ -61,12 +61,53 @@ class Node{
 
 class Solution {
     /**
-     * Approach : Using Sieve of Eratosthenes Approach
+     * Approach II : Using Sieve of Eratosthenes + Binary Search Approach
+     * 
+     * TC: O(Max(head) x log(log(Max(head)))) + O(N x log(Max(head)))
+     * SC: O(Max(head))
+     */
+    Node primeList(Node head) {
+        if (head == null) {
+            return null;
+        }
+        // as per constraints 1 <= node.val <= 10^4 so we can pre-compute prime numbers upto 
+        ArrayList<Integer> primes = getPrimes((int) 1e4 + 100); // TC: O(Max(head) x log(log(Max(head))))
+        Node current = head;
+        while (current != null) { // TC: O(N)
+            int primeNum = getNearestPrimeNumber(current.val, primes); // TC: O(Max(head))
+            current.val = primeNum;
+            current = current.next;
+        }
+        return head;
+    }
+
+    /**
+     * Approach : Find Lower Bound such that primes' element >= value
+     * 
+     * TC: O(log(Max(head)))
+     * SC: O(1)
+     */
+    private int lowerBound(int value, ArrayList<Integer> primes) {
+        int low = 0;
+        int high = primes.size() - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (primes.get(mid) >= value) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    /**
+     * Approach I : Using Sieve of Eratosthenes Approach
      * 
      * TC: O(Max(head) x log(log(Max(head)))) + O(N x Max(head))
      * SC: O(Max(head))
      */
-    Node primeList(Node head) {
+    Node primeListApproachI(Node head) {
         if (head == null) {
             return null;
         }
