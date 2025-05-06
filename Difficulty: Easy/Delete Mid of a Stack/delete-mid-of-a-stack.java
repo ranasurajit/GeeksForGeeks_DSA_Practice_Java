@@ -40,21 +40,37 @@ class GFG {
 
 //User function Template for Java
 
-class Solution
-{
-    //Function to delete middle element of a stack.
-    public void deleteMid(Stack<Integer>s,int sizeOfStack){
-        int mid = (sizeOfStack & 1) == 0 ? (sizeOfStack / 2) : (sizeOfStack / 2) + 1;
-        deleteRecursion(s, sizeOfStack, mid);
+class Solution {
+    // Function to delete middle element of a stack.
+    /**
+     * Approach : Using Recursion Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     */
+    public void deleteMid(Stack<Integer> s) {
+        int k = (int) Math.floor((s.size() + 1) / 2);
+        // 1 based indexing
+        k = s.size() % 2 == 0 ? k : k - 1;
+        solveRecursion(s, k); // TC: O(N)
     }
     
-    private void deleteRecursion(Stack<Integer>s,int sizeOfStack, int mid) {
-        if (sizeOfStack == mid) {
+    /**
+     * TC: O(N / 2) ~ O(N)
+     * SC: O(N / 2) ~ O(N)
+     */
+    private void solveRecursion(Stack<Integer> s, int k) {
+        // Base Case
+        if (k == 0) {
+            // deleting mid of Stack
             s.pop();
             return;
         }
-        int popped = s.pop();
-        deleteRecursion(s, sizeOfStack - 1, mid);
-        s.add(popped);
+        // Hypothesis - we assume that recursion will delete mid of Stack s [0...(n - 1)]so k decreases by 1
+        int lastValue = s.pop();
+        solveRecursion(s, k - 1);
+        // Induction
+        s.push(lastValue);
     }
 }
+
