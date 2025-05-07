@@ -34,14 +34,14 @@ class Solution {
     /**
      * Approach : Using Recursion Approach
      *
-     * TC: O(2 ^ N + M x log(M)) ~ O(2 ^ N)
-     * SC: O(N)
+     * TC: O(2 ^ N + 2 ^ N x log(2 ^ N)) ~ O(N x 2 ^ N)
+     * SC: O(2 ^ N + N) ~ O(2 ^ N)
      */
     public List<String> AllPossibleStrings(String s) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<String>(); // SC: O(2 ^ N)
         StringBuilder sb = new StringBuilder();
-        solveRecursion(s, 0, sb, result); // TC: O(2 ^ N)
-        Collections.sort(result); // TC: O(M x log(M))
+        solveRecursion(0, s, sb, result); // TC: O(2 ^ N), SC: O(N)
+        Collections.sort(result); // TC: O(M x log(M)), where M = (2 ^ N - 1) ~ (2 ^ N)
         return result;
     }
 
@@ -49,7 +49,7 @@ class Solution {
      * TC: O(2 ^ N)
      * SC: O(N)
      */
-    private void solveRecursion(String s, int idx, StringBuilder current, List<String> result) {
+    private void solveRecursion(int idx, String s, StringBuilder current, List<String> result) {
         // Base Case
         if (idx == s.length()) {
             if (current.length() > 0) {
@@ -59,11 +59,11 @@ class Solution {
         }
         // Recursion Calls
         // not take
-        solveRecursion(s, idx + 1, current, result);
+        solveRecursion(idx + 1, s, current, result); // Hypothesis
         // take
-        current.append(s.charAt(idx));
-        solveRecursion(s, idx + 1, current, result);
-        // backtrack
+        current.append(s.charAt(idx)); // Induction
+        solveRecursion(idx + 1, s, current, result); // Hypothesis
+        // backtrack to explore other possibilities
         current.setLength(current.length() - 1);
     }
 }
