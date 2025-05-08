@@ -27,12 +27,31 @@ public class Main {
 
 class Solution {
     /**
-     * Approach : Using Simulation Approach
+     * Approach II : Using Simulation + Math Approach
      *
      * TC: O(N)
      * SC: O(1)
      */
     public int findMissing(int[] arr) {
+        int n = arr.length;
+        int extremeDiffs = arr[n - 1] - arr[0];
+        int expectedDiff = (extremeDiffs & 1) == 0 ? extremeDiffs / n : extremeDiffs / (n - 1);
+        for (int i = 1; i < n; i++) { // TC: O(N)
+            int currentDiff = arr[i] - arr[i - 1];
+            if (currentDiff != expectedDiff) {
+                return arr[i] - expectedDiff;
+            }
+        }
+        return arr[n - 1] + expectedDiff;
+    }
+
+    /**
+     * Approach I : Using Simulation Approach
+     *
+     * TC: O(N)
+     * SC: O(1)
+     */
+    public int findMissingApproachI(int[] arr) {
         int n = arr.length;
         int diff = 0;
         int maxDiff = 0;
