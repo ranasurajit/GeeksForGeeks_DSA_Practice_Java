@@ -45,46 +45,37 @@ public class Main {
 class Solution {
     // Function to merge the arrays.
     /**
-     * Using GAP Method / Shell Sorting Approach
+     * Approach I : Using Two Pointers and Extra Space
      * 
-     * TC: O((M + N) x log(M + N))
-     * SC: O(1)
+     * TC: O(2 x (M + N)) ~ O(M + N)
+     * SC: O(M + N)
      */
     public void mergeArrays(int a[], int b[]) {
         int m = a.length;
         int n = b.length;
-        int len = m + n;
-        int gap = (len / 2) + (len % 2);
-        while (gap > 0) {
-            int left = 0;
-            int right = left + gap;
-            while (right < len) {
-                if (left < m && right >= m) {
-                    // left pointer is at array a and right pointer in array b
-                    swapIfGreater(a, b, left, right - m);
-                } else if (left >= m) {
-                    // left pointer and right pointer in array b
-                    swapIfGreater(b, b, left - m, right - m);
-                } else if (right < m) {
-                    // left pointer and right pointer in array a
-                    swapIfGreater(a, a, left, right);
-                }
-                left++;
-                right++;
+        int[] result = new int[m + n]; // SC: O(M + N)
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while (i < m && j < n) {
+            if (a[i] < b[j]) {
+                result[k++] = a[i++];
+            } else {
+                result[k++] = b[j++];
             }
-            if (gap == 1) {
-                break;
-            }
-            gap = (gap / 2) + (gap % 2);
         }
-    }
-    
-    private void swapIfGreater(int[] a, int[] b, int p, int q) {
-        if (a[p] > b[q]) {
-            // swap elements
-            int temp = b[q];
-            b[q] = a[p];
-            a[p] = temp;
+        while (i < m) {
+            result[k++] = a[i++];
+        }
+        while (j < n) {
+            result[k++] = b[j++];
+        }
+        int p = 0;
+        for (p = 0; p < m; p++) { // TC: O(M)
+            a[p] = result[p];
+        }
+        for (int q = 0; q < n; q++) { // TC: O(N)
+            b[q] = result[m + q];
         }
     }
 }
