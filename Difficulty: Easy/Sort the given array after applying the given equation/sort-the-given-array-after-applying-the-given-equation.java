@@ -95,12 +95,18 @@ class Solution {
         int n = arr.length;
         ArrayList<Integer> result = new ArrayList<Integer>();
         for (int i = 0; i < n; i++) { // TC: O(N)
-            result.add((A * arr[i] * arr[i]) + (B * arr[i]) + C);
+            result.add(computeEquation(arr[i], A, B, C));
         }
         Collections.sort(result); // TC: O(N x log(N))
         return result;
     }
     
+    /**
+     * Using Math
+     * 
+     * TC: O(1)
+     * SC: O(1)
+     */
     private int computeEquation(int x, int A, int B, int C) {
         return (A * x * x) + (B * x) + C;
     }
