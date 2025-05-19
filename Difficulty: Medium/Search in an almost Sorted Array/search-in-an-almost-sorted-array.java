@@ -7,30 +7,21 @@ import java.util.*;
 
 // User function Template for Java
 class Solution {
-    /**
-     * Approach : Using Modified Binary Search
-     * 
-     * TC: O(log(N))
-     * SC: O(1)
-     */
     public int findTarget(int arr[], int target) {
         int n = arr.length;
         int low = 0;
         int high = n - 1;
-        while (low <= high) { // TC: O(log(N))
+        while (low <= high) {
             int mid = low + (high - low) / 2;
-            // target can be at i, (i - 1) or (i + 1)th indices
             if (arr[mid] == target) {
                 return mid;
-            } else if (mid > 0 && arr[mid - 1] == target) {
+            } else if (mid > low && arr[mid - 1] == target) {
                 return mid - 1;
-            } else if (mid < n - 1 && arr[mid + 1] == target) {
+            } else if (mid < high && arr[mid + 1] == target) {
                 return mid + 1;
             } else if (arr[mid] > target) {
-                // range to consider till (mid - 1) instead of mid so high = (mid - 1) - 1
                 high = mid - 2;
             } else {
-                // range to consider till (mid + 1) instead of mid so low = (mid + 1) + 1
                 low = mid + 2;
             }
         }
