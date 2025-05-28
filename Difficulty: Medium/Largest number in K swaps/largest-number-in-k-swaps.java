@@ -1,79 +1,65 @@
-//{ Driver Code Starts
-import java.io.*;
-import java.util.*;
-
-class GfG {
-    public static void main(String args[]) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        int t = sc.nextInt();
-        while (t-- > 0) {
-            int k = sc.nextInt();
-            String str = sc.next();
-            Solution obj = new Solution();
-            System.out.println(obj.findMaximumNum(str, k));
-
-            System.out.println("~");
-        }
-    }
-}
-// } Driver Code Ends
-
-
 
 
 class Solution {
     // Function to find the largest number after k swaps.
     /**
-     * Approach : Using Recursion and Backtracking Approach
+     * Approach : Recursion + Backtracking Approach
      * 
-     * TC: O(K x N ^ 2)
-     * SC: O(K)
+     * Number of Nodes = N...1 = N x (N + 1) / 2 ~ N ^ 2
+     * 
+     * TC: O(N ^ 2) - Ammorized Time Complexity
+     * SC: O(N ^ 2 + N + K)
      */
     public String findMaximumNum(String s, int k) {
-        int n = s.length();
-        String[] max = { s };
-        Set<String> visited = new HashSet<String>();
-        solve(s.toCharArray(), n, k, max, visited);
-        return max[0];
+        char[] chars = s.toCharArray(); // SC: O(N)
+        String[] maxValue = { s };
+        solveBacktrack(0, chars, k, maxValue); // TC: O(N ^ 2), SC: O(N ^ 2 + K)
+        return maxValue[0];
     }
     
     /**
-     * TC: O(K x N ^ 2)
-     * SC: O(K)
+     * Recursion + Backtracking Approach
+     * 
+     * Number of Nodes = N...1 = N x (N + 1) / 2 ~ N ^ 2
+     * 
+     * TC: O(N ^ 2) - Ammorized Time Complexity
+     * SC: O(N ^ 2 + K)
      */
-    private void solve(char[] s, int n, int k, String[] max, Set<String> visited) {
-        String current = new String(s);
-        if (current.compareTo(max[0]) > 0) {
-            max[0] = current;
-        }
+    private void solveBacktrack(int index, char[] chars, int k, String[] maxValue) {
         // Base Case
-        if (k == 0) {
+        if (k == 0 || index == chars.length - 1) {
             return;
         }
-        String key = new String(s) + "_" + k;
-        if (visited.contains(key)) {
-            return;
-        }
-        visited.add(key);
-        // Recursion Calls
-        for (int i = 0; i < n - 1; i++) { // TC: O(N)
-            for (int j = i + 1; j < n; j++) { // TC: O(N)
-                if (s[i] < s[j]) {
-                    swap(s, i, j); // TC: O(1)
-                    solve(s, n, k - 1, max, visited);
-                    swap(s, i, j); // backtrack - TC: O(1)
+        for (int i = index + 1; i < chars.length; i++) { // TC: O(N)
+            int max = chars[i] - '0';
+            for (int j = i; j < chars.length; j++) {
+                max = Math.max(max, (chars[j] - '0'));
+            }
+            if ((chars[index] - '0') < (chars[i] - '0') && (chars[i] - '0') == max) {
+                // swap the characters at indices 'index' and 'i'
+                swap(chars, index, i);
+                String current = String.valueOf(chars);
+                if (current.compareTo(maxValue[0]) > 0) {
+                    maxValue[0] = current;
                 }
+                solveBacktrack(index + 1, chars, k - 1, maxValue);
+                // backtrack - undo swap to explore other possibilities
+                swap(chars, index, i);
+            } else {
+                solveBacktrack(index + 1, chars, k, maxValue);
             }
         }
     }
 
     /**
+     * Swap Approach
+     * 
      * TC: O(1)
      * SC: O(1)
      */
-    private void swap(char[] s, int i, int j) {
-        char temp = s[j];
-        s[j] = s[i];
-        s[i] = temp;
+    private void swap(char[] chars, int a, int b) {
+        char temp = chars[b];
+        chars[b] = chars[a];
+        chars[a] = temp;
     }
 }
