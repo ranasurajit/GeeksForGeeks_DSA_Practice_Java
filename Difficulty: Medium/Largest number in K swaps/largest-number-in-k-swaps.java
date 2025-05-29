@@ -5,61 +5,71 @@ class Solution {
     /**
      * Approach : Recursion + Backtracking Approach
      * 
-     * Number of Nodes = N...1 = N x (N + 1) / 2 ~ N ^ 2
+     * Number of Nodes = N x (N - 1) x (N - 2) x ... x (N - K + 1)
+     * Work done = N ^ 2
      * 
-     * TC: O(N ^ 2) - Ammorized Time Complexity
-     * SC: O(N ^ 2 + N + K)
+     * TC: O(N ^ 2 x (N! / (N - K)!))
+     * SC: O(2 x N + K) ~ O(N + K)
      */
     public String findMaximumNum(String s, int k) {
-        char[] chars = s.toCharArray(); // SC: O(N)
+        int n = s.length();
         String[] maxValue = { s };
-        solveBacktrack(0, chars, k, maxValue); // TC: O(N ^ 2), SC: O(N ^ 2 + K)
+        // TC: O(N ^ 2 x (N! / (N - K)!)), SC: O(2 x N + K)
+        solveBacktrack(0, n, s.toCharArray(), k, maxValue);
         return maxValue[0];
     }
     
     /**
      * Recursion + Backtracking Approach
      * 
-     * Number of Nodes = N...1 = N x (N + 1) / 2 ~ N ^ 2
+     * Number of Nodes = N x (N - 1) x (N - 2) x ... x (N - K + 1)
+     * Work done = N ^ 2
      * 
-     * TC: O(N ^ 2) - Ammorized Time Complexity
-     * SC: O(N ^ 2 + K)
+     * TC: O(N ^ 2 x (N! / (N - K)!))
+     * SC: O(N + K)
      */
-    private void solveBacktrack(int index, char[] chars, int k, String[] maxValue) {
-        // Base Case
-        if (k == 0 || index == chars.length - 1) {
+    private void solveBacktrack(int index, int n, char[] chars, int k, String[] maxValue) {
+        // Backtrack
+        if (k == 0 || index == n) {
             return;
         }
-        for (int i = index + 1; i < chars.length; i++) { // TC: O(N)
-            int max = chars[i] - '0';
-            for (int j = i; j < chars.length; j++) {
-                max = Math.max(max, (chars[j] - '0'));
+        // Recursion Calls
+        for (int i = index + 1; i < n; i++) { // TC: O(N)
+            int max = -1;
+            int idx = -1;
+            for (int j = i; j < n; j++) { // TC: O(N)
+                if (max < chars[j] - '0') {
+                    max = chars[j] - '0';
+                    idx = j;
+                }
             }
-            if ((chars[index] - '0') < (chars[i] - '0') && (chars[i] - '0') == max) {
-                // swap the characters at indices 'index' and 'i'
-                swap(chars, index, i);
-                String current = String.valueOf(chars);
-                if (current.compareTo(maxValue[0]) > 0) {
+            if ((chars[index] - '0') < (chars[idx] - '0')) {
+                // swap the numbers at indices index with idx
+                swap(chars, index, idx);
+                // store the maxValue if found
+                String current = String.valueOf(chars); // SC: O(N)
+                if (current.compareTo(maxValue[0]) > 0) { // TC: O(N)
                     maxValue[0] = current;
                 }
-                solveBacktrack(index + 1, chars, k - 1, maxValue);
-                // backtrack - undo swap to explore other possibilities
-                swap(chars, index, i);
+                // explore
+                solveBacktrack(index + 1, n, chars, k - 1, maxValue);
+                // backtrack
+                swap(chars, index, idx);
             } else {
-                solveBacktrack(index + 1, chars, k, maxValue);
+                solveBacktrack(index + 1, n, chars, k, maxValue);
             }
         }
     }
 
     /**
-     * Swap Approach
+     * Using Swapping Approach
      * 
      * TC: O(1)
      * SC: O(1)
      */
     private void swap(char[] chars, int a, int b) {
-        char temp = chars[b];
-        chars[b] = chars[a];
-        chars[a] = temp;
+        char temp = chars[a];
+        chars[a] = chars[b];
+        chars[b] = temp;
     }
 }
