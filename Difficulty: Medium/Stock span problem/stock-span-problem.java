@@ -35,27 +35,71 @@ class Main {
 }
 // } Driver Code Ends
 
-
-
 class Solution {
+    /**
+     * Approach II : Using Stacks Approach
+     * 
+     * The problem is similar to finding the index of nearest greater elemnt to left
+     * 
+     * TC: O(2 x N) ~ O(N)
+     * SC: O(2 x N) ~ O(N)
+     * 
+     * Accepted. Test Cases Passed: (1120 /1120)
+     */
     public ArrayList<Integer> calculateSpan(int[] arr) {
+        ArrayList<Integer> spanList = new ArrayList<Integer>();
         int n = arr.length;
-        Stack<Integer> s = new Stack<>();
-        s.push(0);
-        ArrayList<Integer> S = new ArrayList<>(n);
-        for (int i = 0; i < n; i++) {
-            S.add(0);
-        }
-        S.set(0, 1);
-
-        for (int i = 1; i < n; i++) {
-            while (!s.isEmpty() && arr[s.peek()] <= arr[i]) {
-                s.pop();
+        int[] result = new int[n]; // SC: O(N)
+        // we will be storing { nearest greater element, index } in Stack
+        Stack<int[]> st = new Stack<int[]>(); // SC: O(N)
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (st.isEmpty()) {
+                result[i] = -1;
+            } else {
+                while (!st.isEmpty() && arr[i] >= st.peek()[0]) {
+                    // compared with pair's value from stack
+                    st.pop();
+                }
+                if (st.isEmpty()) {
+                    result[i] = -1;
+                } else {
+                    result[i] = st.peek()[1]; // setting index from stack
+                }
             }
-            int span = s.isEmpty() ? (i + 1) : (i - s.peek());
-            S.set(i, span);
-            s.push(i);
+            st.push(new int[] { arr[i], i });
         }
-        return S;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            spanList.add(i - result[i]);
+        }
+        return spanList;
+    }
+
+    /**
+     * Approach I : Using Brute-Force Approach
+     * 
+     * TC: O(N ^ 2 + N) ~ O(N ^ 2)
+     * SC: O(N)
+     * 
+     * Time limit exceeded. Test Cases Passed: (1110 /1120)
+     */
+    public ArrayList<Integer> calculateSpanBruteForce(int[] arr) {
+        ArrayList<Integer> spanList = new ArrayList<Integer>();
+        int n = arr.length;
+        int[] span = new int[n];           // SC: O(N)
+        for (int i = 0; i < n; i++) {      // TC: O(N)
+            int count = 0;
+            for (int j = i; j >= 0; j--) { // TC: O(N)
+                if (arr[j] <= arr[i]) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            span[i] = count;
+        }
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            spanList.add(span[i]);
+        }
+        return spanList;
     }
 }
