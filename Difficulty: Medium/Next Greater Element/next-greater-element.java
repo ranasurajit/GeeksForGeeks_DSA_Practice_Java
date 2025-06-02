@@ -38,27 +38,63 @@ class Geeks {
 class Solution {
     // Function to find the next greater element for each element of the array.
     /**
-     * Using Stack Approach
-     *
-     * TC: O(N)
+     * Approach II : Using Stack Approach
+     * 
+     * As we have inner loop j which is dependent on i as j starts from (i + 1) to n
+     * so we can reduce the time complexity to Linear O(N) by using Stack data-structure
+     * 
+     * TC: O(2 x N) ~ O(N)
      * SC: O(N)
      */
     public ArrayList<Integer> nextLargerElement(int[] arr) {
         int n = arr.length;
-        Stack<Integer> st = new Stack<Integer>(); // SC: O(N)
         ArrayList<Integer> nge = new ArrayList<Integer>();
-        for (int i = n - 1; i >= 0; i--) {        // TC: O(N)
+        int[] result = new int[n]; // SC: O(N)
+        Stack<Integer> st = new Stack<Integer>();
+        for (int i = n - 1; i >= 0; i--) {     // TC: O(N)
             if (st.isEmpty()) {
-                nge.add(0, -1);
+                result[i] = -1;
             } else {
-                while (!st.isEmpty() && arr[i] >= st.peek()) {
+                while (!st.isEmpty() && st.peek() <= arr[i]) {
                     st.pop();
                 }
-                int element = st.isEmpty() ? -1 : st.peek();
-                nge.add(0, element);
+                if (st.isEmpty()) {
+                    result[i] = -1;
+                } else {
+                    result[i] = st.peek();
+                }
             }
             st.push(arr[i]);
         }
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            nge.add(result[i]);
+        }
+        return nge;
+    }
+
+    /**
+     * Approach I : Using Brute-Force Approach
+     * 
+     * TC: O(N ^ 2)
+     * SC: O(1)
+     */
+    public ArrayList<Integer> nextLargerElementBruteForce(int[] arr) {
+        int n = arr.length;
+        ArrayList<Integer> nge = new ArrayList<Integer>();
+        for (int i = 0; i < n - 1; i++) {     // TC: O(N)
+            boolean isFound = false;
+            for (int j = i + 1; j < n; j++) { // TC: O(N)
+                if (arr[j] > arr[i]) {
+                    nge.add(arr[j]);
+                    isFound = true;
+                    break;
+                }
+            }
+            if (!isFound) {
+                nge.add(-1);
+            }
+        }
+        nge.add(-1);
         return nge;
     }
 }
