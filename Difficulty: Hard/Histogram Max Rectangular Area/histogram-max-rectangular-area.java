@@ -1,103 +1,62 @@
-//{ Driver Code Starts
-// Initial Template for Java
-import java.io.*;
-import java.lang.*;
-import java.util.*;
-
-
-// } Driver Code Ends
-
 class Solution {
     /**
-     * Using Stack Approach
+     * Approach : Using Monotonic Stack Approach
      * 
-     * TC: O(5 x N) ~ O(N)
-     * SC: O(2 x N) ~ O(N)
+     * At every height, we need to check how much the height can span 
+     * (can span only if height is same or more in its left and right side 
+     * bars)
+     * 
+     * so maximum area = difference (nearest small element(right - left - 1) * height[i])
+     * 
+     * TC: O(3 x N) ~ O(N)
+     * SC: O(4 x N) ~ O(N)
      */
     public static int getMaxArea(int arr[]) {
         int n = arr.length;
-        int[] pse = prevSmaller(arr, n); // TC: O(2 x N), SC: O(N)
-        int[] nse = nextSmaller(arr, n); // TC: O(2 x N), SC: O(N)
-        int maxArea = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {    // TC: O(N), SC: O(1)
-            maxArea = Math.max(maxArea, (nse[i] - pse[i] - 1) * arr[i]);
+        Stack<int[]> st = new Stack<int[]>(); // TC: O(2 x N)
+        int[] nsel = nearestSmallerElementIndexToLeft(arr, n, st); // TC: O(N), SC: O(N)
+        st.clear();
+        int[] nser = nearestSmallerElementIndexToRight(arr, n, st); // TC: O(N), SC: O(N)
+        int maxArea = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            maxArea = Math.max(maxArea, (nser[i] - nsel[i] - 1) * arr[i]);
         }
         return maxArea;
     }
     
     /**
-     * TC: O(2 x N)
+     * Using Stack (Nearest Smaller Element to Left) Approach
+     * 
+     * TC: O(N)
      * SC: O(N)
      */
-    private static int[] prevSmaller(int[] arr, int n) {
-        int[] pse = new int[n];
-        Stack<Integer> st = new Stack<Integer>(); // SC: O(N)
+    private static int[] nearestSmallerElementIndexToLeft(int[] arr, int n, Stack<int[]> st) {
+        int[] nse = new int[n]; // SC: O(N)
         for (int i = 0; i < n; i++) { // TC: O(N)
-            while (!st.isEmpty() && arr[st.peek()] >= arr[i]) { // TC: O(N)
+            while (!st.isEmpty() && st.peek()[0] >= arr[i]) {
                 st.pop();
             }
-            if (st.isEmpty()) {
-                pse[i] = -1;
-            } else {
-                pse[i] = st.peek();
-            }
-            st.push(i);
+            nse[i] = st.isEmpty() ? -1 : st.peek()[1];
+            st.push(new int[] { arr[i], i });
         }
-        return pse;
+        return nse;
     }
     
     /**
-     * TC: O(2 x N)
+     * Using Stack (Nearest Smaller Element to Right) Approach
+     * 
+     * TC: O(N)
      * SC: O(N)
      */
-    private static int[] nextSmaller(int[] arr, int n) {
-        int[] nse = new int[n];
-        Stack<Integer> st = new Stack<Integer>(); // SC: O(N)
+    private static int[] nearestSmallerElementIndexToRight(int[] arr, int n, Stack<int[]> st) {
+        int[] nse = new int[n]; // SC: O(N)
         for (int i = n - 1; i >= 0; i--) { // TC: O(N)
-            while (!st.isEmpty() && arr[st.peek()] >= arr[i]) { // TC: O(N)
+            while (!st.isEmpty() && st.peek()[0] >= arr[i]) {
                 st.pop();
             }
-            if (st.isEmpty()) {
-                nse[i] = n;
-            } else {
-                nse[i] = st.peek();
-            }
-            st.push(i);
+            nse[i] = st.isEmpty() ? n : st.peek()[1];
+            st.push(new int[] { arr[i], i });
         }
         return nse;
     }
 }
-
-
-//{ Driver Code Starts.
-
-class GFG {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        while (t-- > 0) {
-            String line = br.readLine();
-            String[] tokens = line.split(" ");
-
-            // Create an ArrayList to store the integers
-            ArrayList<Integer> array = new ArrayList<>();
-
-            // Parse the tokens into integers and add to the array
-            for (String token : tokens) {
-                array.add(Integer.parseInt(token));
-            }
-
-            int[] arr = new int[array.size()];
-            int idx = 0;
-            for (int i : array) arr[idx++] = i;
-            Solution obj = new Solution();
-            int res = obj.getMaxArea(arr);
-
-            System.out.println(res);
-
-            System.out.println("~");
-        }
-    }
-}
-
-// } Driver Code Ends
