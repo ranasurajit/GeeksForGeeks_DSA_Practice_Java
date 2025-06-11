@@ -55,35 +55,38 @@ class Node{
 */
 
 class Solution {
+    /**
+     * Approach : Using Linked-List Traversal and Simulation Approach
+     *
+     * TC: O(3 x N) ~ O(N)
+     * SC: O(1)
+     */
     public Node addOne(Node head) {
-        Node reverse = reverseLL(head);
+        Node revList = reverseLL(head); // TC: O(N)
+        Node current = revList;
         int carry = 1;
-        Node current = reverse;
-        while (current != null) {
-            int value = current.data;
-            // add previous carry = 1 to current node's data
-            int addedValue = (carry + value);
-            int rem = addedValue % 10;
-            carry = addedValue / 10;
+        int sum = 0;
+        while (current != null) { // TC: O(N)
+            sum = carry + current.data;
+            int rem = sum % 10;
+            carry = sum / 10;
             current.data = rem;
             current = current.next;
         }
-        reverse = reverseLL(reverse);
-        /**
-         * if carry is still left i.e > 0 we need to create a new Node 
-         * with value 1 and add reverse nodes to it and return
-         */
+        head = reverseLL(revList); // TC: O(N)
         if (carry > 0) {
-            Node newNode = new Node(carry);
-            newNode.next = reverse;
-            return newNode;
+            Node newHead = new Node(carry);
+            newHead.next = head;
+            return newHead;
         }
-        // if carry = 0
-        return reverse;
+        return head;
     }
     
     /**
-     * Returns reverse of a LinkedList
+     * Using Iterative Approach to Reverse the Linked-List
+     * 
+     * TC: O(N)
+     * SC: O(1)
      */
     private Node reverseLL(Node head) {
         if (head == null || head.next == null) {
@@ -91,11 +94,11 @@ class Solution {
         }
         Node prev = null;
         Node current = head;
-        while (current != null) {
-            Node next = current.next;
+        while (current != null) { // TC: O(N)
+            Node temp = current.next;
             current.next = prev;
             prev = current;
-            current = next;
+            current = temp;
         }
         return prev;
     }
