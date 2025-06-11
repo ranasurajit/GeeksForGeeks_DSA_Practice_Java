@@ -72,49 +72,47 @@ class Node
 class Solution {
     // Function to find the length of a loop in the linked list.
     /**
-     * Approach : Using Floyd's Fast and Slow Pointers Approach
-     * 
-     * TC: O(3 x N) ~ O(N)
+     * Approach : Using Two Pointers (Fast and Slow Pointers) Approach
+     *
+     * TC: O(2 x N) ~ O(N)
      * SC: O(1)
      */
     public int countNodesinLoop(Node head) {
-        if (head == null) {
-            // the linkedlist has no loop
+        if (head == null || head.next == null) {
             return 0;
         }
         Node slow = head;
         Node fast = head;
-        // move slow pointer by 1 step and fast pointer by 2 steps
+        /**
+         * Move slow and fast pointers by 1 and 2 steps respectively until
+         * they meet
+         */
+        boolean hasLoop = false;
         while (fast != null && fast.next != null) { // TC: O(N)
             slow = slow.next;
             fast = fast.next.next;
             if (slow == fast) {
+                hasLoop = true;
                 break;
             }
         }
-        if (fast == null || fast.next == null) {
-            // the linkedlist has no loop
+        if (!hasLoop) {
             return 0;
         }
+        int count = 0;
         /**
-         * at this point slow and fast points to same node
-         * 
-         * now move slow pointer back to head
-         * move both slow and fast pointers by 1 step to find
-         * the start point of the loop
+         * Keep the fast pointer as is and move the slow pointer by 1 step
+         * until they meet and keep incrementing count which will give the 
+         * length of the loop
          */
-        slow = head;
-        while (slow != fast) { // TC: O(N)
+        while (slow != null) { // TC: O(N)
             slow = slow.next;
-            fast = fast.next;
+            count++;
+            if (slow == fast) {
+                // count has the length of the loop
+                break;
+            }
         }
-        int length = 1;
-        // now move only fast pointer by 1 step till it meets slow pointer at start of loop
-        fast = fast.next;
-        while (slow != fast) { // TC: O(N)
-            length++;
-            fast = fast.next;
-        }
-        return length;
+        return count;
     }
 }
