@@ -1,6 +1,6 @@
 class Solution {
     /**
-     * Approach : Using Min-Heap (PriorityQueue) Approach
+     * Approach I : Using Min-Heap (PriorityQueue) Approach
      * 
      * TC: O(N x log(K) + K) ~ O(N x log(K))
      * SC: O(K)
