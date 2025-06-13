@@ -21,10 +21,15 @@ class Solution {
      * SC: O(1)
      */
     public Node deleteNode(Node head, int x) {
+        if (head == null) {
+            return null;
+        }
         if (x == 1) {
-            head = head.next;
-            head.prev = null;
-            return head;
+            Node newHead = head.next;
+            if (newHead != null) {
+                newHead.prev = null;
+            }
+            return newHead;
         }
         int count = 1;
         Node prev = null;
