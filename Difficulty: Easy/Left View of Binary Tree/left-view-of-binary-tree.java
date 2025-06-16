@@ -120,22 +120,38 @@ class Node
         left = right = null;
     }
 }*/
-class Tree {
-    //Function to return list containing elements of left view of binary tree.
+class Solution {
+    // Function to return list containing elements of left view of binary tree.
+    /**
+     * Approach : Using BFS Traversal Approach
+     *
+     * TC: O(N)
+     * SC: O(N)
+     */
     ArrayList<Integer> leftView(Node root) {
         ArrayList<Integer> view = new ArrayList<Integer>();
-        dfsTree(root, 0, view);
+        if (root == null) {
+            return view;
+        }
+        Queue<Node> queue = new LinkedList<Node>(); // SC: O(N)
+        queue.offer(root);
+        int level = 0;
+        while (!queue.isEmpty()) { // TC: O(N)
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node current = queue.poll();
+                if (view.size() == level) {
+                    view.add(current.data);
+                }
+                if (current.left != null) {
+                    queue.offer(current.left);
+                }
+                if (current.right != null) {
+                    queue.offer(current.right);
+                }
+            }
+            level++;
+        }
         return view;
-    }
-    
-    private void dfsTree(Node node, int level, ArrayList<Integer> view) {
-        if (node == null) {
-            return;
-        }
-        if (view.size() == level) {
-            view.add(node.data);
-        }
-        dfsTree(node.left, level + 1, view);
-        dfsTree(node.right, level + 1, view);
     }
 }
