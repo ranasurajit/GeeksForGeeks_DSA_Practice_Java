@@ -118,37 +118,55 @@ class GfG {
 
 
 class Solution {
-    //Function to return a list containing the bottom view of the given tree.
-    public ArrayList <Integer> bottomView(Node root) {
-        TreeMap<Integer, Integer> tm = new TreeMap<Integer, Integer>();
-        Queue<Pair> queue = new LinkedList<Pair>();
+    /**
+     * Approach : Using BFS + Hashing Approach
+     * 
+     * TC: O(2 x N) ~ O(N)
+     * SC: O(2 x N) ~ O(N)
+     */
+    public ArrayList<Integer> bottomView(Node root) {
+        ArrayList<Integer> path = new ArrayList<Integer>();
+        if (root == null) {
+            return path;
+        }
+        HashMap<Integer, Integer> nodeMap = new HashMap<Integer, Integer>(); // SC: O(N)
+        Queue<Pair> queue = new LinkedList<Pair>(); // SC: O(N)
         queue.offer(new Pair(root, 0));
-        while (!queue.isEmpty()) {
-            Pair current = queue.poll();
-            Node node = current.node;
-            int offset = current.offset;
-            tm.put(offset, node.data);
-            if (node.left != null) {
-                queue.offer(new Pair(node.left, offset - 1));
-            }
-            if (node.right != null) {
-                queue.offer(new Pair(node.right, offset + 1));
+        int minCol = Integer.MAX_VALUE;
+        while (!queue.isEmpty()) { // TC: O(N)
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Pair current = queue.poll();
+                Node node = current.node;
+                int col = current.col;
+                minCol = Math.min(minCol, col);
+                nodeMap.put(col, node.data);
+                if (node.left != null) {
+                    queue.offer(new Pair(node.left, col - 1));
+                }
+                if (node.right != null) {
+                    queue.offer(new Pair(node.right, col + 1));
+                }
             }
         }
-        ArrayList<Integer> view = new ArrayList<Integer>();
-        for (Integer key : tm.keySet()) {
-            view.add(tm.get(key));
+        int n = nodeMap.size();
+        int count = 0;
+        int start = minCol;
+        while (count < n) { // TC: O(N)
+            path.add(nodeMap.get(start));
+            start++;
+            count++;
         }
-        return view;
+        return path;
     }
-    
-    class Pair {
+
+    static class Pair {
         Node node;
-        int offset;
-        
-        public Pair(Node node, int offset) {
+        int col;
+
+        public Pair(Node node, int col) {
             this.node = node;
-            this.offset = offset;
+            this.col = col;
         }
     }
 }
