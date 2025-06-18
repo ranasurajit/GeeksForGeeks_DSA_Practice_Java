@@ -102,103 +102,96 @@ class Node
 
 class Solution {
     /**
-     * Using DFS Approach
+     * Approach : Using DFS, Pre-order Traversal and Stacks Approach
      * 
-     * TC: O(N + 2 x log(N)) ~ O(N + log(N))
-     * SC: O(N + 3 x log(N)) ~ O(N + log(N))
-     * 
-     * @param root
-     * @return
+     * TC: O(N + 2 x log(N)) ~ O(N)
+     * SC: O(3 x log(N)) ~ O(log(N))
      */
     ArrayList<Integer> boundaryTraversal(Node node) {
         ArrayList<Integer> path = new ArrayList<Integer>();
-        path.add(node.data);
-        if (!isLeafNode(node)) {
-            // get left boundary
-            leftBoundary(node, path); // TC: O(log(N)), SC: O(log(N))
-            // get leaf nodes boundary
-            leafBoundary(node, path); // TC: O(N), SC: O(N)
-            // get right boundary
-            rightBoundary(node, path); // TC: O(log(N)), SC: O(2 x log(N))
+        if (node == null) {
+            return path;
         }
+        path.add(node.data);
+        if (isLeafNode(node)) {
+            return path;
+        }
+        printLeftBoundary(node, path);  // TC: O(log(N)), SC: O(log(N))
+        printLeafNodes(node, path);     // TC: O(N), SC: O(log(N))
+        printRightBoundary(node, path); // TC: O(log(N)), SC: O(log(N))
         return path;
     }
     
     /**
-     * TC: O(log(N)), as only left side nodes are traversed
-     * SC: O(log(N))
+     * As we are travelling through height nodes
      * 
-     * @param root
-     * @param path
+     * TC: O(log(N))
+     * SC: O(log(N))
      */
-    private void leftBoundary(Node root, ArrayList<Integer> path) {
-        Node leftNode = root.left;
-        while (leftNode != null) {
-            if (isLeafNode(leftNode)) {
+    private void printLeftBoundary(Node node, ArrayList<Integer> path) {
+        Node current = node.left;
+        while (current != null) {
+            if (isLeafNode(current)) {
                 break;
             }
-            path.add(leftNode.data);
-            if (leftNode.left != null) {
-                leftNode = leftNode.left;
+            path.add(current.data);
+            if (current.left != null) {
+                current = current.left;
             } else {
-                leftNode = leftNode.right;
+                current = current.right;
             }
         }
     }
-
+    
     /**
-     * TC: O(log(N)), as only right side nodes are traversed
-     * SC: O(2 x log(N))
+     * Using Pre-order Traversal
      * 
-     * @param root
-     * @param path
+     * As we are travelling all nodes
+     * 
+     * TC: O(N)
+     * SC: O(log(N))
      */
-    private void rightBoundary(Node root, ArrayList<Integer> path) {
-        Node rightNode = root.right;
-        // needed as we need to print in reverse order
-        Stack<Integer> st = new Stack<Integer>(); // SC: O(log(N))
-        while (rightNode != null) {
-            if (isLeafNode(rightNode)) {
+    private void printLeafNodes(Node node, ArrayList<Integer> path) {
+        if (node == null) {
+            return;
+        }
+        if (isLeafNode(node)) {
+            path.add(node.data);
+        }
+        printLeafNodes(node.left, path);
+        printLeafNodes(node.right, path);
+    }
+    
+    /**
+     * As we are travelling through height nodes
+     * 
+     * TC: O(log(N))
+     * SC: O(log(N))
+     */
+    private void printRightBoundary(Node node, ArrayList<Integer> path) {
+        Stack<Integer> st = new Stack<Integer>();
+        Node current = node.right;
+        while (current != null) {
+            if (isLeafNode(current)) {
                 break;
             }
-            st.push(rightNode.data);
-            if (rightNode.right != null) {
-                rightNode = rightNode.right;
+            st.push(current.data);
+            if (current.right != null) {
+                current = current.right;
             } else {
-                rightNode = rightNode.left;
+                current = current.left;
             }
         }
         while (!st.isEmpty()) {
             path.add(st.pop());
         }
     }
-
-    /**
-     * TC: O(N), need to traverse all nodes
-     * SC: O(N)
-     * 
-     * @param root
-     * @param path
-     */
-    private void leafBoundary(Node root, ArrayList<Integer> path) {
-        if (root == null) {
-            return;
-        }
-        if (isLeafNode(root)) {
-            path.add(root.data);
-        }
-        leafBoundary(root.left, path);
-        leafBoundary(root.right, path);
-    }
-
+    
     /**
      * TC: O(1)
      * SC: O(1)
-     * 
-     * @param root
-     * @return
      */
-    private boolean isLeafNode(Node root) {
-        return root != null && root.left == null && root.right == null;
+    private boolean isLeafNode(Node node) {
+        return node != null && node.left == null && node.right == null;
     }
 }
