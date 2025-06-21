@@ -15,10 +15,22 @@ class Node{
 class Solution {
     // Function to check whether all nodes of a tree have the value
     // equal to the sum of their child nodes.
+    /**
+     * Approach : Using Recursion Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     */
     public static int isSumProperty(Node root) {
         return hasChildrenSum(root) ? 1 : 0;
     }
     
+    /**
+     * Using Recursion Approach
+     * 
+     * TC: O(N)
+     * SC: O(N)
+     */
     private static boolean hasChildrenSum(Node root) {
         // Base Case
         if (root == null || (root.left == null && root.right == null)) {
