@@ -1,52 +1,95 @@
-//{ Driver Code Starts
-// Initial Template for Java
-import java.io.*;
-import java.util.*;
-import java.util.HashMap;
-
-
-// } Driver Code Ends
 // User function Template for Java
 
 class Solution {
     /**
-     * Using Tabulation
+     * Approach IV : Using Space Optimization (Optimized DP) Approach
      * 
-     * TC: O(N x R + 2 x N) ~ O(N x R)
-     * SC: O(N x R)
+     * TC: O(N x T) + O(T) + O(N) ~ O(N x T)
+     * SC: O(T) + O(T) ~ O(T)
      * 
-     * where R = sum of array 'arr' elements
+     * - O(T) - prev and current array memory
      * 
-     * @param arr
-     * @return
+     * Accepted (1111 / 1111 testcases passed)
      */
     public int minDifference(int arr[]) {
         int n = arr.length;
-        int range = 0;
-        for (int i = 0; i < n; i++) {
-            range += arr[i];
+        if (n == 1) {
+            return arr[0];
         }
-        List<Integer> vec = solveTabulation(arr, n, range);
+        int total = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            total += arr[i];
+        }
+        /**
+         * We need to divide the array 'arr' into two subsets with minimum sum difference
+         * 
+         * S2 - S1 = D where S2 > S1 and S2 + S1 = total, so we can deduce, S2 = total - S1
+         * so, total - 2 x S1 = D, so we need to minimize |total - 2 x S1|
+         */
+        // Initialization
+        boolean[] prev = new boolean[total + 1]; // SC: O(T)
+        prev[0] = true;
+        // Iterative Calls
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            boolean[] current = new boolean[total + 1]; // SC: O(T)
+            current[0] = true;
+            for (int j = 1; j < total + 1; j++) { // TC: O(T)
+                if (arr[i - 1] <= j) {
+                    current[j] = prev[j - arr[i - 1]] || prev[j];
+                } else {
+                    current[j] = prev[j];
+                }
+            }
+            prev = current.clone();
+        }
+        // comparison with dp[n]
         int minDiff = Integer.MAX_VALUE;
-        for (int i = 0; i < vec.size(); i++) {
-            minDiff = Math.min(minDiff, Math.abs(range - (2 * vec.get(i))));
+        for (int j = 0; j <= total / 2; j++) { // TC: O(T)
+            if (prev[j]) {
+                int currentDiff = Math.abs(total - 2 * j);
+                minDiff = Math.min(minDiff, currentDiff);
+            }
         }
         return minDiff;
     }
 
-    private List<Integer> solveTabulation(int[] arr, int n, int range) {
-        boolean[][] dp = new boolean[n + 1][range + 1];
-
-        // initialization
-        Arrays.fill(dp[0], false);
-        for (int i = 0; i < n + 1; i++) {
+    /**
+     * Approach III : Using Tabulation (Bottom-Up DP) Approach
+     * 
+     * TC: O(N x T) + O(T) + O(N) + O(N) ~ O(N x T)
+     * SC: O(N x T)
+     * 
+     * - O(N x T) - dp table array memory
+     * 
+     * Accepted (1111 / 1111 testcases passed)
+     */
+    public int minDifferenceTabulation(int arr[]) {
+        int n = arr.length;
+        if (n == 1) {
+            return arr[0];
+        }
+        int total = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            total += arr[i];
+        }
+        /**
+         * We need to divide the array 'arr' into two subsets with minimum sum difference
+         * 
+         * S2 - S1 = D where S2 > S1 and S2 + S1 = total, so we can deduce, S2 = total - S1
+         * so, total - 2 x S1 = D, so we need to minimize |total - 2 x S1|
+         */
+        boolean[][] dp = new boolean[n + 1][total + 1]; // SC: O(N x T)
+        // Initialization
+        /**
+         * For n = 0 (no elements), dp[0][0] = true and and rest dp[0][1] tp dp[0][total] = false
+         * For total = 0, dp[i][0] = true
+         */
+        for (int i = 0; i < n + 1; i++) { // TC: O(N)
             dp[i][0] = true;
         }
-
-        // iterative call
-        for (int i = 1; i < n + 1; i++) {
-            for (int j = 1; j < range + 1; j++) {
-                // convert (n, range) to (i, j)
+        // Iterative Calls
+        for (int i = 1; i < n + 1; i++) { // TC: O(N)
+            for (int j = 1; j < total + 1; j++) { // TC: O(T)
                 if (arr[i - 1] <= j) {
                     dp[i][j] = dp[i - 1][j - arr[i - 1]] || dp[i - 1][j];
                 } else {
@@ -54,51 +97,85 @@ class Solution {
                 }
             }
         }
-        List<Integer> vec = new ArrayList<Integer>();
-
-        for (int i = 0; i < range + 1; i++) {
-            if (dp[n][i]) {
-                vec.add(i);
+        // comparison with dp[n]
+        int minDiff = Integer.MAX_VALUE;
+        for (int j = 0; j <= total / 2; j++) { // TC: O(T)
+            if (dp[n][j]) {
+                int currentDiff = Math.abs(total - 2 * j);
+                minDiff = Math.min(minDiff, currentDiff);
             }
         }
-        return vec;
+        return minDiff;
     }
-}
 
-
-//{ Driver Code Starts.
-public class Main {
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        while (t-- > 0) {
-
-            String line = br.readLine();
-            String[] tokens = line.split(" ");
-
-            // Create an ArrayList to store the integers
-            ArrayList<Integer> array = new ArrayList<>();
-
-            // Parse the tokens into integers and add to the array
-            for (String token : tokens) {
-                array.add(Integer.parseInt(token));
-            }
-
-            int[] arr = new int[array.size()];
-            int idx = 0;
-            for (int i : array) arr[idx++] = i;
-
-            // int k = Integer.parseInt(br.readLine());
-            // Create Solution object and find closest sum
-            Solution ob = new Solution();
-            int ans = ob.minDifference(arr);
-
-            System.out.print(ans);
-
-            System.out.println(); // New line after printing the results
+    /**
+     * Approach I : Using Memoization (Top-Down DP) Approach
+     * 
+     * TC: O(N x T x T) + O(N x T) + O(N) ~ O(N x T x T)
+     * SC: O(N x T) + O(N)
+     * 
+     * - O(N x T) - memoization array memory
+     * - O(N) - stack memory
+     * 
+     * Accepted (1111 / 1111 testcases passed)
+     */
+    public int minDifferenceMemoization(int arr[]) {
+        int n = arr.length;
+        if (n == 1) {
+            return arr[0];
         }
+        int total = 0;
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            total += arr[i];
+        }
+        /**
+         * We need to divide the array 'arr' into two subsets with minimum sum difference
+         * 
+         * S2 - S1 = D where S2 > S1 and S2 + S1 = total, so we can deduce, S2 = total - S1
+         * so, total - 2 x S1 = D, so we need to minimize |total - 2 x S1|
+         */
+        int[][] memo = new int[n][total + 1]; // SC: O(N x T)
+        for (int[] mem : memo) { // TC: O(N)
+            Arrays.fill(mem, -1); // TC: O(T)
+        }
+        int minDiff = Integer.MAX_VALUE;
+        for (int j = 0; j <= total / 2; j++) { // TC: O(T)
+            solveMemoization(n - 1, arr, j, memo); // TC: O(N x T), SC: O(N)
+            // comparison with memo[n - 1]
+            if (memo[n - 1][j] == 1) {
+                int currentDiff = Math.abs(total - 2 * j);
+                minDiff = Math.min(minDiff, currentDiff);
+            }
+        }
+        return minDiff;
+    }
+    
+    /**
+     * Using Memoization Approach
+     * 
+     * TC: O(N x T)
+     * SC: O(N)
+     */
+    private boolean solveMemoization(int idx, int[] arr, int total, int[][] memo) {
+        // Base Case
+        if (total == 0) {
+            return true;
+        }
+        if (idx < 0) {
+            return false;
+        }
+        // Memoization Check
+        if (memo[idx][total] != -1) {
+            return memo[idx][total] == 1;
+        }
+        // Recursion Calls
+        boolean skip = solveMemoization(idx - 1, arr, total, memo);
+        boolean pick = false;
+        if (arr[idx] <= total) {
+            pick = solveMemoization(idx - 1, arr, total - arr[idx], memo);
+        }
+        boolean result = pick || skip;
+        memo[idx][total] = result ? 1 : 0;
+        return result;
     }
 }
-
-// } Driver Code Ends
