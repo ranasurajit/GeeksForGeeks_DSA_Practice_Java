@@ -3,14 +3,80 @@ class Solution {
     private int n;
 
     /**
-     * Approach II : Using Memoization (Top-Down DP) Approach
+     * Approach IV : Using Space Optimization (Optimized DP) Approach
      * 
-     * TC: O(M x N) + O(M x M x N) ~ O(M x M x N)
-     * SC: O(M x N) + O(N)
+     * TC: O(M) + O(N x M) + O(M) ~ O(N x M)
+     * SC: O(M) + O(M) ~ O(M)
      *
      * Accepted (1120 / 1120 testcases passed)
      */
     public int maxGold(int[][] mat) {
+        m = mat.length;
+        n = mat[0].length;
+        int maxValue = 0;
+        // Initialization
+        int[] current = new int[m]; // SC: O(M)
+        int[] next = new int[m]; // SC: O(M)
+        for (int i = 0; i < m; i++) { // TC: O(M)
+            next[i] = mat[i][n - 1];
+        }
+        // Iterative Calls
+        for (int j = n - 2; j >= 0; j--) { // TC: O(N)
+            for (int i = m - 1; i >= 0; i--) { // TC: O(M)
+                int sameRowCol = next[i];
+                int upRowCol = i > 0 ? next[i - 1] : 0;
+                int downRowCol = i < m - 1 ? next[i + 1] : 0;
+                current[i] = mat[i][j] + Math.max(sameRowCol, Math.max(upRowCol, downRowCol));
+            }
+            next = current.clone();
+        }
+        for (int val : next) { // TC: O(M)
+            maxValue = Math.max(maxValue, val);
+        }
+        return maxValue;
+    }
+
+    /**
+     * Approach III : Using Tabulation (Bottom-Up DP) Approach
+     * 
+     * TC: O(M) + O(N x M) + O(M) ~ O(M x N)
+     * SC: O(M x N)
+     *
+     * Accepted (1120 / 1120 testcases passed)
+     */
+    public int maxGoldTabulation(int[][] mat) {
+        m = mat.length;
+        n = mat[0].length;
+        int maxValue = 0;
+        // Initialization
+        int[][] dp = new int[m][n]; // SC: O(M x N)
+        for (int i = 0; i < m; i++) { // TC: O(M)
+            dp[i][n - 1] = mat[i][n - 1];
+        }
+        // Iterative Calls
+        for (int j = n - 2; j >= 0; j--) { // TC: O(N)
+            for (int i = m - 1; i >= 0; i--) { // TC: O(M)
+                int sameRowCol = dp[i][j + 1];
+                int upRowCol = i > 0 ? dp[i - 1][j + 1] : 0;
+                int downRowCol = i < m - 1 ? dp[i + 1][j + 1] : 0;
+                dp[i][j] = mat[i][j] + Math.max(sameRowCol, Math.max(upRowCol, downRowCol));
+            }
+        }
+        for (int start = 0; start < m; start++) { // TC: O(M)
+            maxValue = Math.max(maxValue, dp[start][0]);
+        }
+        return maxValue;
+    }
+
+    /**
+     * Approach II : Using Memoization (Top-Down DP) Approach
+     * 
+     * TC: O(M x N) + O(M x N) ~ O(M x N)
+     * SC: O(M x N) + O(N)
+     *
+     * Accepted (1120 / 1120 testcases passed)
+     */
+    public int maxGoldMemoization(int[][] mat) {
         m = mat.length;
         n = mat[0].length;
         int maxValue = 0;
