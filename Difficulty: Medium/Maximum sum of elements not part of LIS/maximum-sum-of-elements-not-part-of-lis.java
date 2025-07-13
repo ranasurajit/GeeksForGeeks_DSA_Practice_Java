@@ -7,32 +7,36 @@ class Solution {
      */
     public int nonLisMaxSum(int[] arr) {
         int n = arr.length;
-        int[] dp = new int[n]; // SC: O(N)
-        int maxLISLength = 1;
-        int sumArr = 0;
-        // track sum of elements in any LIS
-        int[] sumDP = new int[n]; // SC: O(N)
+        // we need to track Maximum Length of LIS in dp array
+        int[] dp = new int[n];
+        // we need to also track the sums of all LIS elements having maximum length (LIS)
+        int[] sumDP = new int[n];
+        // minimum length of LIS is 1 (every element in array is an increasing subsequence by itself)
+        int maxLIS = 1;
+        int totalSum = 0;
         for (int i = 0; i < n; i++) { // TC: O(N)
-            sumArr += arr[i];
-            dp[i] = 1;
+            dp[i] = 1; // minimum increasing subsequence length = 1
             sumDP[i] = arr[i];
-            for (int prev = 0; prev < i; prev++) { // TC: O(N)
-                if (arr[i] > arr[prev] && dp[i] <= dp[prev] + 1) {
-                    dp[i] = dp[prev] + 1;
-                    sumDP[i] = sumDP[prev] + arr[i];
+            totalSum += arr[i];
+            for (int prevIdx = 0; prevIdx < i; prevIdx++) { // TC: O(N)
+                if (arr[i] > arr[prevIdx] && dp[i] <= dp[prevIdx] + 1) {
+                    // we used <= as there can be more than 1 LIS
+                    dp[i] = dp[prevIdx] + 1;
+                    sumDP[i] = sumDP[prevIdx] + arr[i];
                 }
-                if (maxLISLength < dp[i]) {
-                    maxLISLength = dp[i];
-                }
+                maxLIS = Math.max(maxLIS, dp[i]);
             }
         }
-        // comparing the sums used in LIS to get minimum sum LIS
+        // to maximum the sum of elements not part of LIS we need to get minimum sum of LIS
+        // we need to compare and get the minimum LIS sum from sumDP
         int minSumLIS = Integer.MAX_VALUE;
         for (int i = 0; i < n; i++) { // TC: O(N)
-            if (dp[i] == maxLISLength) {
+            if (dp[i] == maxLIS) {
+                // we filter all LIS having maximum length and compare to get minimum sum of LIS
                 minSumLIS = Math.min(minSumLIS, sumDP[i]);
             }
         }
-        return sumArr - minSumLIS;
+        // return the maximum sum of elements not part of LIS
+        return totalSum - minSumLIS;
     }
 }
