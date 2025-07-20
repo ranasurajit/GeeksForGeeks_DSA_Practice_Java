@@ -1,79 +1,63 @@
-//{ Driver Code Starts
-import java.util.*;
-import java.lang.*;
-import java.io.*;
-class GFG
-{
-    public static void main(String[] args) throws IOException
-    {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine().trim());
-        while(T-->0)
-        {
-            String[] s = br.readLine().trim().split(" ");
-            int V = Integer.parseInt(s[0]);
-            int E = Integer.parseInt(s[1]);
-            ArrayList<ArrayList<Integer>>adj = new ArrayList<>();
-            for(int i = 0; i < V; i++)
-                adj.add(i, new ArrayList<Integer>());
-            for(int i = 0; i < E; i++){
-                String[] S = br.readLine().trim().split(" ");
-                int u = Integer.parseInt(S[0]);
-                int v = Integer.parseInt(S[1]);
-                adj.get(u).add(v);
-                adj.get(v).add(u);
-            }
-            Solution obj = new Solution();
-            int ans = obj.detectCycle(V, adj);
-            System.out.println(ans);
-        }
-    }
-}
-// } Driver Code Ends
-
-
 class Solution {
-    //Function to detect cycle using DSU in an undirected graph.
+    // Function to detect cycle using DSU in an undirected graph.
+    /**
+     * Approach : Using Disjoint-Set (Union By Rank and Find By Path Compression) Approach
+     * 
+     * TC: O(V) + O(V + E x α(V)) ~ O(V + E x α(V))
+     * SC: O(V) + O(V) + O(V) ~ O(V)
+     */
     public int detectCycle(int V, ArrayList<ArrayList<Integer>> adj) {
-        int[] parent = new int[V];
-        int[] rank = new int[V];
-        for (int i = 0; i < V; i++) {
+        int[] parent = new int[V];    // SC: O(V)
+        int[] rank = new int[V];      // SC: O(V)
+        for (int i = 0; i < V; i++) { // TC: O(V)
             parent[i] = i;
         }
-        // traversing adjacency list and making union u -> v
-        for (int u = 0; u < V; u++) {
-            for (Integer v : adj.get(u)) {
-                if (u < v) {
-                    if (find(parent, u) == find(parent, v)) {
-                        // cycle detected
+        for (int u = 0; u < V; u++) { // TC: O(V)
+            for (Integer v : adj.get(u)) { // TC: O(E)
+                if (u < v) { // process each edge once
+                    // u and v nodes are connected
+                    int uParent = find(parent, u); // TC: O(α(V)), SC: O(V)
+                    int vParent = find(parent, v); // TC: O(α(V)), SC: O(V)
+                    if (uParent == vParent) {
                         return 1;
                     }
-                    unionByRank(parent, rank, u, v);
+                    unionByRank(uParent, vParent, parent, rank); // TC: O(1)
                 }
             }
         }
         return 0;
     }
-    
+
+    /**
+     * Using Find By Path Compression
+     * 
+     * TC: O(α(V))
+     * SC: O(V)
+     */
     private int find(int[] parent, int x) {
-        if (parent[x] == x) {
+        if (x == parent[x]) {
             return x;
         }
         return parent[x] = find(parent, parent[x]);
     }
     
-    private void unionByRank(int[] parent, int[] rank, int a, int b) {
-        int parentA = find(parent, a);
-        int parentB = find(parent, b);
-        if (parentA != parentB) {
-            if (rank[parentA] > rank[parentB]) {
-                parent[parentB] = parentA;
-            } else if (rank[parentA] < rank[parentB]) {
-                parent[parentA] = parentB;
-            } else {
-                parent[parentB] = parentA;
-                rank[parentA] += 1;
-            }
+    /**
+     * Using Union By Rank
+     * 
+     * TC: O(1)
+     * SC: O(1)
+     */
+    private void unionByRank(int x, int y, int[] parent, int[] rank) {
+        if (rank[x] > rank[y]) {
+            // make x as parent of y
+            parent[y] = x;
+        } else if (rank[y] > rank[x]) {
+            // make y as parent of x
+            parent[x] = y;
+        } else {
+            // making anyone as parent
+            parent[y] = x;
+            rank[x]++;
         }
     }
 }
