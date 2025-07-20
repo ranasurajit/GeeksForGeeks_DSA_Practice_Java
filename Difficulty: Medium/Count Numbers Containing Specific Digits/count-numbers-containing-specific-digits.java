@@ -1,13 +1,91 @@
 class Solution {
     /**
-     * Approach II : Using Memoization (Top-Down DP) Approach
+     * Approach IV : Using Space Optimization (Optimized DP) Approach
      * 
-     * TC: O(N) + O(N) ~ O(N)
-     * SC: O(N) + O(N)
+     * TC: O(N) + O(40 x N) ~ O(N)
+     * SC: O(N)
      * 
      * Accepted (230 / 230 testcases passed)
      */
     public int countValid(int n, int[] arr) {
+        Set<Integer> hs = new HashSet<Integer>(); // SC: O(N)
+        for (int elem : arr) { // TC: O(N)
+            hs.add(elem);
+        }
+        // Intitalization
+        int[][] next = new int[2][2]; // SC: O(4) ~ O(1)
+        for (int isStart = 0; isStart < 2; isStart++) {        // TC: O(2)
+            for (int hasDigit = 0; hasDigit < 2; hasDigit++) { // TC: O(2)
+                next[isStart][hasDigit] = hasDigit == 1 ? 1 : 0;
+            }
+        }
+        // Iterative Calls
+        for (int i = n - 1; i >= 0; i--) { // TC: O(N)
+            int[][] current = new int[2][2]; // SC: O(4) ~ O(1)
+            for (int isStart = 0; isStart < 2; isStart++) { // TC: O(2)
+                for (int hasDigit = 0; hasDigit < 2; hasDigit++) { // TC: O(2)
+                    for (int digit = 0; digit <= 9; digit++) { // TC: O(10)
+                        if (isStart == 1 && digit == 0) {
+                            continue;
+                        }
+                        int containsDigit = (hasDigit == 1) || hs.contains(digit) ? 1 : 0;
+                        current[isStart][hasDigit] += next[0][containsDigit];
+                    }
+                }
+            }
+            for (int p = 0; p < current.length; p++) {
+                next[p] = current[p].clone();
+            }
+        }
+        return next[1][0];
+    }
+
+    /**
+     * Approach III : Using Tabulation (Bottom-Up DP) Approach
+     * 
+     * TC: O(N) + O(40 x N) ~ O(N)
+     * SC: O(N) + O(N)
+     * 
+     * Accepted (230 / 230 testcases passed)
+     */
+    public int countValidTabulation(int n, int[] arr) {
+        Set<Integer> hs = new HashSet<Integer>(); // SC: O(N)
+        for (int elem : arr) { // TC: O(N)
+            hs.add(elem);
+        }
+        // Intitalization
+        int[][][] dp = new int[n + 1][2][2]; // SC: O(4 x N) ~ O(N)
+        for (int isStart = 0; isStart < 2; isStart++) {        // TC: O(2)
+            for (int hasDigit = 0; hasDigit < 2; hasDigit++) { // TC: O(2)
+                dp[n][isStart][hasDigit] = hasDigit == 1 ? 1 : 0;
+            }
+        }
+        // Iterative Calls
+        for (int i = n - 1; i >= 0; i--) { // TC: O(N)
+            for (int isStart = 0; isStart < 2; isStart++) { // TC: O(2)
+                for (int hasDigit = 0; hasDigit < 2; hasDigit++) { // TC: O(2)
+                    for (int digit = 0; digit <= 9; digit++) { // TC: O(10)
+                        if (isStart == 1 && digit == 0) {
+                            continue;
+                        }
+                        int containsDigit = (hasDigit == 1) || hs.contains(digit) ? 1 : 0;
+                        dp[i][isStart][hasDigit] += dp[i + 1][0][containsDigit];
+                    }
+                }
+            }
+        }
+        return dp[0][1][0];
+    }
+
+    /**
+     * Approach II : Using Memoization (Top-Down DP) Approach
+     * 
+     * TC: O(N) + O(N) ~ O(N)
+     * SC: O(N) + O(N) + O(N)
+     * 
+     * Accepted (230 / 230 testcases passed)
+     */
+    public int countValidMemoization(int n, int[] arr) {
         Set<Integer> hs = new HashSet<Integer>(); // SC: O(N)
         for (int elem : arr) { // TC: O(N)
             hs.add(elem);
