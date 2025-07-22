@@ -1,70 +1,70 @@
-//{ Driver Code Starts
-// Initial Template for Java
-import java.util.*;
-
-
-// } Driver Code Ends
-
-// User function Template for Java
-
 class Solution {
     // Function to find number of strongly connected components in the graph.
     /**
-     * Approach: Using Kosaraju's Algorithm Approach
+     * Approach : Using Kosaraju's Algorithm Approach
      * 
-     * TC: O(3 x (V + E)) ~ O(V + E)
-     * SC: O(3 x V + E) ~ O(V + E)
+     * TC: O(2 x V + E) + O(V + E) + O(2 x V + E) ~ O(V + E)
+     * SC: O(V) + O(V) + O(V + E) + O(V) ~ O(V + E)
      */
     public int kosaraju(ArrayList<ArrayList<Integer>> adj) {
-        int n = adj.size();
-        // Step 1: Get the Topological Sort by DFS and populate the Stack
-        Stack<Integer> st = new Stack<Integer>();
-        boolean[] visited = new boolean[n]; // SC: O(V)
-        for (int i = 0; i < n; i++) { // TC: O(1)
+        /**
+         * step 1: we need to find the topological sort Stack
+         */
+        Stack<Integer> st = new Stack<Integer>(); // SC: O(V)
+        int v = adj.size();
+        boolean[] visited = new boolean[v]; // SC: O(V)
+        for (int i = 0; i < v; i++) { // TC: O(V)
             if (!visited[i]) {
-                dfsTopoSortGraph(i, visited, adj, st); // TC: O(V + E)
+                dfsTopoSortGraph(i, visited, st, adj); // TC: O(V + E), SC: O(V)
             }
         }
-        // Step 2: Reverse the directions of directed graph adjacency list 'adj'
-        Map<Integer, ArrayList<Integer>> revAdj = reverseDirections(adj); // TC: O(V + E), SC: O(V + E)
-        // Step 3 Perform DFS on reversed Adjacency List in LIFO order from Stack 'st'
-        visited = new boolean[n]; // SC: O(V)
-        int countComponents = 0;
+        /**
+         * step 2 : reverse the adjacency list adj
+         */
+        Map<Integer, ArrayList<Integer>> revAdj = 
+            reverseAdjacencyList(adj); // TC: O(V + E), SC: O(V + E)
+        /**
+         * step 3: reset the visited array and perform DFS on revAdj with nodes
+         * popped from Stack formed in Step 1 and count disconnected components
+         */
+        visited = new boolean[v]; // SC: O(V) - reused
+        int count = 0;
         while (!st.isEmpty()) { // TC: O(V)
             int u = st.pop();
             if (!visited[u]) {
-                dfsGraph(u, visited, revAdj); // TC: O(V + E), SC: O(V)
-                countComponents++;
+                dfsGraphTraverse(u, visited, revAdj); // TC: O(V + E), SC: O(V)
+                count++;
             }
         }
-        return countComponents;
+        return count;
     }
     
     /**
-     * Using DFS Approach
+     * Using DFS Traversal Approach
      * 
      * TC: O(V + E)
      * SC: O(V)
      */
-    private void dfsGraph(int u, boolean[] visited, Map<Integer, ArrayList<Integer>> revAdj) {
+    private void dfsGraphTraverse(int u, boolean[] visited,
+        Map<Integer, ArrayList<Integer>> revAdj) {
         visited[u] = true;
         for (Integer v : revAdj.getOrDefault(u, new ArrayList<Integer>())) {
             if (!visited[v]) {
-                dfsGraph(v, visited, revAdj);
+                dfsGraphTraverse(v, visited, revAdj);
             }
         }
     }
-    
+
     /**
      * Using Hashing Approach
      * 
      * TC: O(V + E)
      * SC: O(V + E)
      */
-    private Map<Integer, ArrayList<Integer>> reverseDirections(ArrayList<ArrayList<Integer>> adj) {
+    private Map<Integer, ArrayList<Integer>> reverseAdjacencyList(ArrayList<ArrayList<Integer>> adj) {
         Map<Integer, ArrayList<Integer>> revAdj = new HashMap<Integer, ArrayList<Integer>>();
-        for (int u = 0; u < adj.size(); u++) {
-            for (Integer v : adj.get(u)) {
+        for (int u = 0; u < adj.size(); u++) { // TC: O(V)
+            for (int v : adj.get(u)) { // TC: O(E)
                 revAdj.computeIfAbsent(v, k -> new ArrayList<Integer>()).add(u);
             }
         }
@@ -72,52 +72,19 @@ class Solution {
     }
     
     /**
-     * Using DFS Approach
+     * Using DFS Traversal Approach
      * 
      * TC: O(V + E)
      * SC: O(V)
      */
-    private void dfsTopoSortGraph(int u, boolean[] visited,
-        ArrayList<ArrayList<Integer>> adj, Stack<Integer> st) {
+    private void dfsTopoSortGraph(int u, boolean[] visited, Stack<Integer> st,
+        ArrayList<ArrayList<Integer>> adj) {
         visited[u] = true;
         for (Integer v : adj.get(u)) {
             if (!visited[v]) {
-                dfsTopoSortGraph(v, visited, adj, st);
+                dfsTopoSortGraph(v, visited, st, adj);
             }
         }
         st.push(u);
     }
 }
-
-
-//{ Driver Code Starts.
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int t = sc.nextInt();
-        while (t-- > 0) {
-            int V = sc.nextInt();
-            int E = sc.nextInt();
-
-            ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-            for (int i = 0; i < V; i++) {
-                adj.add(new ArrayList<>());
-            }
-
-            for (int i = 0; i < E; i++) {
-                int u = sc.nextInt();
-                int v = sc.nextInt();
-                adj.get(u).add(v);
-            }
-
-            Solution obj = new Solution();
-            System.out.println(obj.kosaraju(adj));
-
-            System.out.println("~");
-        }
-        sc.close();
-    }
-}
-
-// } Driver Code Ends
