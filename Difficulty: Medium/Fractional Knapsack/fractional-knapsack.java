@@ -1,86 +1,39 @@
-//{ Driver Code Starts
-import java.io.*;
-import java.util.*;
-
-class GfG {
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine().trim());
-
-        while (t-- > 0) {
-            // Read values array
-            String[] valueInput = br.readLine().trim().split(" ");
-            List<Integer> values = new ArrayList<>();
-            for (String s : valueInput) {
-                values.add(Integer.parseInt(s));
-            }
-
-            // Read weights array
-            String[] weightInput = br.readLine().trim().split(" ");
-            List<Integer> weights = new ArrayList<>();
-            for (String s : weightInput) {
-                weights.add(Integer.parseInt(s));
-            }
-
-            // Read the knapsack capacity
-            int w = Integer.parseInt(br.readLine().trim());
-
-            // Call fractionalKnapsack function and print result
-            System.out.println(String.format(
-                "%.6f", new Solution().fractionalKnapsack(values, weights, w)));
-            System.out.println("~");
-        }
-    }
-}
-
-// } Driver Code Ends
-
-
-// User function Template for Java
 class Solution {
-    // Function to get the maximum total value in the knapsack.
     /**
-     * TC: O(2 x N) ~ O(N)
+     * Approach : Using Greedy + Heaps Approach
+     * 
+     * TC: O(N x log(N)) + O(N) ~ O(N x log(N))
      * SC: O(N)
      */
-    double fractionalKnapsack(List<Integer> val, List<Integer> wt, int capacity) {
-        int n = val.size();
-        /**
-         * Fractional Knapsack is a greedy problem we need to
-         * greedily pick the items based upon the value / weight
-         * ratio.
-         * 
-         * So we need to create Max-Heap (Priority Queue)
-         * of value / weight ratio
-         * 
-         * we will store int[] as { val/wt, val, wt } in the Max-heap
-         */
-        // SC: O(N)
-        PriorityQueue<double[]> pq = new PriorityQueue<double[]>((double[] p, double[] q) -> {
-           return Double.compare(q[0], p[0]); 
-        });
-        for (int i = 0; i < n; i++) {            // TC: O(N)
+    double fractionalKnapsack(int[] values, int[] weights, int W) {
+        int n = weights.length;
+        // we will be storing { values[i] / weights[i], values[i], weights[i] } in the Max-Heap
+       PriorityQueue<double[]> pq =
+            new PriorityQueue<double[]>((p, q) -> {
+                if (p[0] == q[0]) {
+                    return Double.compare(p[2], q[2]);
+                }
+                return Double.compare(q[0], p[0]);
+            }); // SC: O(N)
+        for (int i = 0; i < n; i++) { // TC: O(N)
             pq.offer(new double[] {
-                ((double) val.get(i) / wt.get(i)),
-                val.get(i),
-                wt.get(i) }
-            );
+                (double) ((double) values[i] / weights[i]),
+                (double) values[i],
+                (double) weights[i]
+            }); // TC: O(log(N))
         }
-        double currentWeight = 0.0;
-        double maxVal = 0.0;
-        while (!pq.isEmpty()) {                 // TC: O(N)
+        double maxValue = 0d;
+        double currentWeight = 0.0d;
+        while (!pq.isEmpty()) { // TC: O(N)
             double[] current = pq.poll();
-            if (currentWeight + current[2] <= capacity) {
+            if (currentWeight + current[2] <= W) {
                 currentWeight += current[2];
-                maxVal += current[1];
+                maxValue += current[1];
             } else {
-                double leftWeight = capacity - currentWeight;
-                double fracValue = leftWeight * current[0];
-                maxVal += fracValue;
+                maxValue += (double) (W - currentWeight) * current[0];
                 break;
             }
         }
-        return maxVal;
+        return maxValue;
     }
 }
