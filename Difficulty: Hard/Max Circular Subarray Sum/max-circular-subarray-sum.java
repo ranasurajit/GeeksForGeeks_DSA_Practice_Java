@@ -1,57 +1,55 @@
-//{ Driver Code Starts
-import java.io.*;
-import java.util.*;
-
-class Sorting {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        for (int g = 0; g < t; g++) {
-            String[] str = (br.readLine()).trim().split(" ");
-            int arr[] = new int[str.length];
-            for (int i = 0; i < str.length; i++) arr[i] = Integer.parseInt(str[i]);
-            System.out.println(new Solution().circularSubarraySum(arr));
-            // System.out.println("~");
-        }
-    }
-}
-// } Driver Code Ends
-
-
 class Solution {
-
-    // a: input array
-    // n: size of array
-    // Function to find maximum circular subarray sum.
     /**
-     * Optimal Approach - Using Kadane's Algorithm
+     * Approach : Using Kadane's Algorithm Approach
      * 
      * TC: O(N)
      * SC: O(1)
      */
-    public int circularSubarraySum(int arr[]) {
+    public int maxCircularSum(int arr[]) {
         int n = arr.length;
-        int currentSumMin = 0;
-        int currentSumMax = 0;
-        int minSum = Integer.MAX_VALUE;
-        int maxSum = Integer.MIN_VALUE;
-        int totalSum = 0;
-        // Using Kadane's Algorithm to find minimum sub-array sum
+        // Using Kadane's Algorithm
+        int maxLinearSum = Integer.MIN_VALUE;
+        int minLinearSum = Integer.MAX_VALUE;
+        int currentMaxLinearSum = 0;
+        int currentMinLinearSum = 0;
+        int total = 0;
+        int countNegatives = 0;
+        int maxNegatives = Integer.MIN_VALUE;
         for (int i = 0; i < n; i++) { // TC: O(N)
-            currentSumMin += arr[i];
-            currentSumMax += arr[i];
-            minSum = Math.min(minSum, currentSumMin);
-            maxSum = Math.max(maxSum, currentSumMax);
-            if (currentSumMin > 0) {
-                currentSumMin = 0;
+            currentMaxLinearSum += arr[i];
+            currentMinLinearSum += arr[i];
+            total += arr[i];
+            maxLinearSum = Math.max(maxLinearSum, currentMaxLinearSum);
+            minLinearSum = Math.min(minLinearSum, currentMinLinearSum);
+            if (currentMaxLinearSum < 0) {
+                /**
+                 * we reset currentMaxLinearSum to zero as we will not carry 
+                 * negative sum to next sub-array sum
+                 */
+                currentMaxLinearSum = 0;
             }
-            if (currentSumMax < 0) {
-                currentSumMax = 0;
+            if (currentMinLinearSum > 0) {
+                /**
+                 * we reset currentMinLinearSum to zero as we will not carry 
+                 * positive sum to next sub-array sum
+                 */
+                currentMinLinearSum = 0;
             }
-            totalSum += arr[i];
+            if (arr[i] < 0) {
+                countNegatives++;
+                maxNegatives = Math.max(maxNegatives, arr[i]);
+            }
         }
-        // case 1: Linear array - max sum of linear array
-        // case 2: Circular array - total sum = max circular sub-array sum + min sub-array sum
-        return Math.max(maxSum, totalSum - minSum);
+        if (countNegatives == n) {
+            // if all elements are negative we need to return the maximum of all negatives
+            return maxNegatives;
+        }
+        /**
+         * Maximum possible sum of circular array will be Maximum out of below:
+         * 
+         * 1. Maximum Linear Sum
+         * 2. Total - Minimum Linear Sum
+         */
+        return Math.max(maxLinearSum, total - minLinearSum);
     }
 }
