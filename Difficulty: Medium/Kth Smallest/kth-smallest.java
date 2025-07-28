@@ -1,64 +1,38 @@
-//{ Driver Code Starts
-// Initial Template for Java
-
-/*package whatever //do not write package name here */
-
-import java.io.*;
-import java.util.*;
-
-class GFG {
-    public static void main(String args[]) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(System.out);
-
-        int t = Integer.parseInt(in.readLine().trim());
-        while (t-- > 0) {
-            String line = in.readLine();
-            String[] tokens = line.split(" ");
-
-            // Create an ArrayList to store the integers
-            ArrayList<Integer> array = new ArrayList<>();
-
-            // Parse the tokens into integers and add to the array
-            for (String token : tokens) {
-                array.add(Integer.parseInt(token));
-            }
-
-            int[] arr = new int[array.size()];
-            int idx = 0;
-            for (int i : array) arr[idx++] = i;
-
-            int key = Integer.parseInt(in.readLine().trim());
-            Solution ob = new Solution();
-            out.println(ob.kthSmallest(arr, key));
-        }
-        out.flush();
-    }
-}
-
-// } Driver Code Ends
-
-
 // User function Template for Java
 
 class Solution {
+    /**
+     * Approach II : Using Sorting Approach
+     *
+     * TC: O(N x log(N))
+     * SC: O(1)
+     */
     public static int kthSmallest(int[] arr, int k) {
         int n = arr.length;
-        // kth smallest element is asked so use max heap
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((p, q) -> q - p);
-        int count = 0;
-        // fill priority queue with k elements
-        while (pq.size() < k) {
-            pq.offer(arr[count++]);
-        }
-        // iterate to include smallest ones
-        for (int i = count; i< n; i++) {
-            if (pq.peek() > arr[i]) {
-                pq.poll();
-                pq.offer(arr[i]);
+        Arrays.sort(arr); // TC: O(N x log(N))
+        return arr[k - 1];
+    }
+    
+    /**
+     * Approach I : Using PriorityQueue (Max-Heap) Approach
+     *
+     * TC: O(N x log(N))
+     * SC: O(K)
+     */
+    public static int kthSmallestUsingHeaps(int[] arr, int k) {
+        int n = arr.length;
+        // we will insert elements to Max-Heap (PriorityQueue)
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((p, q) -> q - p); // SC: O(K)
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            if (pq.size() < k) {
+                pq.offer(arr[i]);     // TC: O(log(N))
+            } else {
+                if (!pq.isEmpty() && arr[i] < pq.peek()) {
+                    pq.poll();
+                    pq.offer(arr[i]); // TC: O(log(N))
+                }
             }
         }
-        // the peek element will have kth smallest element
         return pq.peek();
     }
 }
