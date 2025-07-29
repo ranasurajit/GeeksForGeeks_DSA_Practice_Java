@@ -15,9 +15,7 @@ class Solution {
             if (!map.containsKey(ch)) {
                 map.put(ch, new int[] { i, -1 });
             } else {
-                int[] value = map.get(ch);
-                value[1] = i;
-                map.put(ch, value);
+                map.get(ch)[1] = i;
             }
         }
         int[] prefixSum = new int[n]; // SC: O(N)
