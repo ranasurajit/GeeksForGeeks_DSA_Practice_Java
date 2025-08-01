@@ -1,36 +1,38 @@
-//{ Driver Code Starts
-// Initial Template for Java
-import java.io.*;
-import java.util.*;
-
-
-// } Driver Code Ends
-
-// User function Template for Java
 class Solution {
     /**
-     * Approach II : Using Array Transformation Approach
-     * convert elements > k = 1 and elements <= k = -1
-     * then find the longest sub-array with sum > 0
+     * Approach II : Using Array Transformation + Hashing Approach
      * 
-     * TC: O(2 x N) ~ O(N)
-     * SC: O(1)
+     * TC: O(N) + O(N) ~ O(N)
+     * SC: O(N)
+     * 
+     * Accepted (1115/1115 testcases passed)
      */
-    static int longestSubarray(int[] arr, int k) {
+    public int longestSubarray(int[] arr, int k) {
         int n = arr.length;
-        for (int i = 0; i < n; i++) { // TC: O(N)
-            arr[i] = arr[i] <= k ? -1 : 1;
+        /**
+         * Transform all elements > k as 1 and all elements <= k as -1
+         * 
+         * so the problem is reduced to finding the longest sub-array with sum > 0
+         */
+        for (int i = 0; i < n; i++) {     // TC: O(N)
+            arr[i] = arr[i] > k ? 1 : -1;
         }
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-        int sum = 0;
+        /**
+         * We will be using a HashMap to store the prefixSums if not present and check 
+         * if we have seen the diff = prefixSum - 1 in the HashMap
+         */
         int maxLength = 0;
-        for (int i = 0; i < n; i++) {
-            sum += arr[i];
-            if (sum > 0) {
+        int prefixSum = 0;
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // SC: O(N)
+        for (int i = 0; i < n; i++) { // TC: O(N)
+            prefixSum += arr[i];
+            if (prefixSum > 0) {
                 maxLength = i + 1;
             } else {
-                map.putIfAbsent(sum, i);
-                int diff = sum - 1;
+                if (!map.containsKey(prefixSum)) {
+                    map.put(prefixSum, i);
+                }
+                int diff = prefixSum - 1;
                 if (map.containsKey(diff)) {
                     maxLength = Math.max(maxLength, i - map.get(diff));
                 }
@@ -38,26 +40,28 @@ class Solution {
         }
         return maxLength;
     }
-  
+
     /**
      * Approach I : Using Brute-Force Approach
      * 
-     * TC: O(N ^ 2)
+     * TC: O(N x N)
      * SC: O(1)
+     * 
+     * Time Limit Exceeded (1110/1115 testcases passed)
      */
-    static int longestSubarrayApproachI(int[] arr, int k) {
+    public int longestSubarrayBruteForce(int[] arr, int k) {
         int n = arr.length;
         int maxLength = 0;
-        for (int i = 0; i < n; i++) { // TC: O(N)
-            int countKPlus = 0;
-            int countKMinus = 0;
+        for (int i = 0; i < n; i++) {     // TC: O(N)
+            int countGTK = 0;
+            int countLTEK = 0;
             for (int j = i; j < n; j++) { // TC: O(N)
                 if (arr[j] > k) {
-                    countKPlus++;
+                    countGTK++;
                 } else {
-                    countKMinus++;
+                    countLTEK++;
                 }
-                if (countKPlus > countKMinus) {
+                if (countGTK > countLTEK) {
                     maxLength = Math.max(maxLength, j - i + 1);
                 }
             }
@@ -65,33 +69,3 @@ class Solution {
         return maxLength;
     }
 }
-
-
-//{ Driver Code Starts.
-
-class GFG {
-    public static void main(String args[]) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int t = Integer.parseInt(br.readLine().trim());
-        while (t-- > 0) {
-            String line = br.readLine();
-            String[] tokens = line.split(" ");
-            int n = tokens.length;
-            int[] arr = new int[n];
-
-            int i = 0;
-            // Parse the tokens into integers and add to the array
-            for (String token : tokens) {
-                arr[i] = Integer.parseInt(token);
-                i++;
-            }
-
-            int k = Integer.parseInt(br.readLine().trim());
-            System.out.println(new Solution().longestSubarray(arr, k));
-            System.out.println("~");
-        }
-    }
-}
-
-// } Driver Code Ends
