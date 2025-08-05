@@ -1,49 +1,38 @@
-//{ Driver Code Starts
-import java.io.*;
-import java.util.*;
-
-class GFG {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t;
-        t = Integer.parseInt(br.readLine());
-        while(t-- > 0){
-            
-            int a;
-            a = Integer.parseInt(br.readLine());
-            
-            
-            int b;
-            b = Integer.parseInt(br.readLine());
-            
-            Solution obj = new Solution();
-            int res = obj.gcd(a, b);
-            
-            System.out.println(res);
-            
-        }
-    }
-}
-
-// } Driver Code Ends
-
-
-
 class Solution {
+    /**
+     * Approach II : Using Euler's Euclidean GCD Algorithm Approach
+     * 
+     * TC: O(log(Min(a, b)))
+     * SC: O(log(Min(a, b)))
+     * 
+     * Accepted (1115 /1115 testcases passed)
+     */
     public static int gcd(int a, int b) {
-        if (a == 0) {
-            return b;
+        if (b > a) {
+            return gcd(b, a);
         }
+        // ensure b < a
         if (b == 0) {
             return a;
         }
-        if (a == b) {
-            return a;
+        return gcd(b, a % b);
+    }
+
+    /**
+     * Approach I : Using Math Approach
+     * 
+     * TC: O(Min(a, b))
+     * SC: O(1)
+     * 
+     * Time Limit Exceeded (1010 /1115 testcases passed)
+     */
+    public static int gcdBruteForce(int a, int b) {
+        int n = Math.min(a, b);
+        for (int i = n; i >= 1; i--) {
+            if (a % i == 0 && b % i == 0) {
+                return i;
+            }
         }
-        if (a > b) {
-            return gcd(a % b, b);
-        } else {
-            return gcd(b % a, a);
-        }
+        return 1;
     }
 }
