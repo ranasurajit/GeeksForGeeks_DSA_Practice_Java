@@ -35,8 +35,10 @@ class Solution {
         sieve[0] = 0;
         sieve[1] = 0;
         for (int i = 2; i * i <= n; i++) {
-            for (int j = i * i; j <= n; j += i) {
-                sieve[j] = 0;
+            if (sieve[i] == 1) {
+                for (int j = i * i; j <= n; j += i) {
+                    sieve[j] = 0;
+                }
             }
         }
     }
