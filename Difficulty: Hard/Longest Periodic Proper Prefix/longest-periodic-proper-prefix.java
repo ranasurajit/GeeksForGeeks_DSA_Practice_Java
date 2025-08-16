@@ -1,21 +1,18 @@
 class Solution {
     /**
-     * Approach II : Using Z-Algorithm (Optimal) Approach
+     * Approach II : Using Z-Algorithm Approach
      * 
-     * TC: O(N) + O(N) ~ O(N)
+     * TC: O(N) + O(N)
      * SC: O(N)
      * 
-     * Accepted (1120 / 1120 test cases passed)
+     * Accepted (1120 / 1120 testcases passed)
      */
     int getLongestPrefix(String s) {
         int n = s.length();
-        int[] z = zFunction(s); // TC: O(N), SC: O(N)
-        // traverse z-array to find position where
-        // suffix equals prefix
-        for (int i = n - 1 ; i > 0; i--) { // TC: O(N)
-            if (z[i] == n - i) {
-                // s[i:] is a suffix that is equal to 
-                // the prefix of length n - i
+        int[] zArr = zFunction(s, n); // TC: O(N), SC: O(N)
+        // now we will compare from end of zArr if its value matches with current index
+        for (int i = n - 1; i > 0; i--) { // TC: O(N)
+            if (zArr[i] == n - i) {
                 return i;
             }
         }
@@ -23,56 +20,67 @@ class Solution {
     }
     
     /**
-     * Using Z-Algorithm (Optimal) Approach
+     * Using Z-Algorithm Approach
      * 
      * TC: O(N)
      * SC: O(N)
      */
-    public static int[] zFunction(String s) {
-        int n = s.length();
-        int[] z = new int[n]; // SC: O(N)
-
-        // [l, r] is the current segment that matches a prefix
-        int l = 0, r = 0;
-        for (int i = 1; i < n; i++) { // TC: O(N)
-            if (i <= r) {
-                // inside the z-box: reuse previously computed values
-                z[i] = Math.min(r - i + 1, z[i - l]);
-            }
-            // try to extend the match beyond the current z-box
-            while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) {
-                z[i]++;
-            }
-            // update the z-box if the match extended beyond
-            // current right boundary
-            if (i + z[i] - 1 > r) {
-                l = i;
-                r = i + z[i] - 1;
+    private int[] zFunction(String s, int n) {
+        int[] zArr = new int[n]; // SC: O(N)
+        zArr[0] = 0;
+        // here z[i] represents substring starting at index 'i' that is a prefix and suffix
+        int left = 0;  // left pointer of z-window
+        int right = 0; // right pointer of z-window
+        for (int k = 1; k < n; k++) { // TC: O(N)
+            if (k > right) {
+                // resetting left and right for re-comparizon
+                left = k;
+                right = k;
+                // keep comapring till substring starting at k matches
+                while (right < n && s.charAt(right) == s.charAt(right - left)) {
+                    right++;
+                }
+                zArr[k] = right - left;
+                right--;
+            } else {
+                int k1 = k - left;
+                // check if the index is within z-window
+                if (zArr[k1] < right - k + 1) {
+                    zArr[k] = zArr[k1];
+                } else {
+                    // we need to again re-compare
+                    left = k;
+                    while (right < n && s.charAt(right) == s.charAt(right - left)) {
+                        right++;
+                    }
+                    zArr[k] = right - left;
+                    right--;
+                }
             }
         }
-        return z;
+        return zArr;
     }
     
     /**
-     * Approach I : Using Simulation (Brute-Force) Approach
+     * Approach I : Using Brute-Force (String Simulation) Approach
      * 
-     * TC: O(N x 3 x N) ~ O(N ^ 2)
-     * SC: O(2 x N) ~ O(N)
+     * TC: O(N x N)
+     * SC: O(N)
      * 
-     * Time Limit Exceeded (1110 / 1120 test cases passed)
+     * Time Limit Exceeded (1110 / 1120 testcases passed)
      */
     int getLongestPrefixBruteForce(String s) {
         int n = s.length();
         /**
-         * prefix will range from size (1 to n - 1)
+         * Proper prefix can go upto s[0:n - 1]
          */
-        for (int i = n - 1; i >= 1; i--) { // TC: O(N)
-            String prefix = s.substring(0, i); // TC: O(N), SC: O(N)
-            while (prefix.length() < n) { // TC: O(N), SC: O(N)
+        for (int i = 1; i < n; i++) { // TC: O(N)
+            String prefix = s.substring(0, n - i); // TC: O(N), SC: O(N) - reused
+            while (prefix.length() < s.length()) {
                 prefix += prefix;
-            }
-            if (prefix.startsWith(s)) { // TC: O(N)
-                return i;
+                if (prefix.startsWith(s)) { // TC: O(N)
+                    return n - i;
+                }
             }
         }
         return -1;
