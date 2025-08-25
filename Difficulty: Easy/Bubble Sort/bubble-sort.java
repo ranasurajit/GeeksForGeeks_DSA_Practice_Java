@@ -1,6 +1,6 @@
 class Solution {
     /**
-     * Approach : Using Selection Sort Approach
+     * Approach : Using Bubble Sort Approach
      * 
      * TC: O(N x N)
      * SC: O(1)
@@ -13,13 +13,18 @@ class Solution {
          * at the end
          */
         for (int i = n - 1; i >= 1; i--) { // TC: O(N)
+            boolean didSwap = false;
             for (int j = 0; j < i; j++) {  // TC: O(N) 
-                if (arr[i] < arr[j]) {
+                if (arr[j + 1] < arr[j]) {
                     // swap
-                    int temp = arr[i];
-                    arr[i] = arr[j];
+                    int temp = arr[j + 1];
+                    arr[j + 1] = arr[j];
                     arr[j] = temp;
+                    didSwap = true;
                 }
+            }
+            if (!didSwap) {
+                break;
             }
         }
     }
